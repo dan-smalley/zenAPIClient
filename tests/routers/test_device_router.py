@@ -193,15 +193,15 @@ class TestDeviceRouter(object):
         responses_callback(responses)
 
         dr = DeviceRouter(url, headers, True)
-        resp = dr._get_info_by_uid('Devices/Server/TEST')
+        resp = dr.get_info_by_uid('Devices/Server/TEST')
         assert resp['data']['name'] == "TEST"
 
     def test_device_router_get_info_by_uid_not_found(self, responses):
         responses_callback(responses)
 
         dr = DeviceRouter(url, headers, True)
-        with pytest.raises(ZenossAPIClientError, message="Request failed: ObjectNotFoundException: Cannot find \"Devices/Server/TEST\". KeyError: 'TEST'"):
-            resp = dr._get_info_by_uid('Devices/Server/NOTFOUND')
+        with pytest.raises(ZenossAPIClientError, match="Request failed: ObjectNotFoundException: Cannot find \"Devices/Server/TEST\". KeyError: 'TEST'"):
+            resp = dr.get_info_by_uid('Devices/Server/NOTFOUND')
 
     def test_device_router_list_collectors(self, responses):
         responses_callback(responses)
@@ -246,10 +246,10 @@ class TestDeviceRouter(object):
 
         dr = DeviceRouter(url, headers, True)
         dc = dr.get_device_class('Server/TEST')
-        resp = dc.list_devices()
+        resp = dc.get_devices()
         assert resp['total'] == 1
-        assert resp['devices'][0]['name'] == "test.example.com"
-        assert resp['devices'][0]['uid'] == "Devices/Server/TEST/devices/test.example.com"
+        assert resp['devices'][0].name == "test.example.com"
+        assert resp['devices'][0].uid == "Devices/Server/TEST/devices/test.example.com"
 
     def test_device_router_zenossdeviceclass_get_devices(self, responses):
         responses_callback(responses)

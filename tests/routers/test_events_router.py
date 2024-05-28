@@ -70,7 +70,7 @@ class TestEventsRouter(object):
         responses_callback(responses)
 
         er = EventsRouter(url, headers, True)
-        resp = er._query_events(limit=2)
+        resp = er.query_events(limit=2)
         assert resp['total'] == 50
         assert resp['ts'] == 1508797504.409547
         assert len(resp['events']) == 1
@@ -80,7 +80,7 @@ class TestEventsRouter(object):
         responses_callback(responses)
 
         er = EventsRouter(url, headers, True)
-        resp = er._get_details_by_evid("02420a11-0015-98b9-11e7-9d96ae351999")
+        resp = er.get_details_by_evid("02420a11-0015-98b9-11e7-9d96ae351999")
         assert resp['agent'] == "zenpython"
         assert resp['device_uuid'] == "02e21618-b30a-47bf-8591-471c70570932"
 
@@ -88,19 +88,19 @@ class TestEventsRouter(object):
         responses_callback(responses)
 
         er = EventsRouter(url, headers, True)
-        with pytest.raises(ZenossAPIClientError, message="Request failed: ServiceResponseError: Not Found"):
-            resp = er._get_details_by_evid("02420a11-0015-98b9-11e7-9d96ae35199f")
+        with pytest.raises(ZenossAPIClientError, match="Request failed: ServiceResponseError: Not Found"):
+            resp = er.get_details_by_evid("02420a11-0015-98b9-11e7-9d96ae35199f")
 
     def test_events_router_event_actions(self, responses):
         responses_callback(responses)
 
         er = EventsRouter(url, headers, True)
-        resp = er._event_actions('acknowledge', evids=["02420a11-0015-98b9-11e7-9d96ae351999"])
+        resp = er.event_actions('acknowledge', evids=["02420a11-0015-98b9-11e7-9d96ae351999"])
 
     def test_events_router_event_actions_invalid(self):
         er = EventsRouter(url, headers, True)
-        with pytest.raises(ZenossAPIClientError, message="Unknown event action: terminate"):
-            er._event_actions('terminate')
+        with pytest.raises(ZenossAPIClientError, match="Unknown event action: terminate"):
+            er.event_actions('terminate')
 
     def test_events_router_get_config(self, responses):
         responses_callback(responses)

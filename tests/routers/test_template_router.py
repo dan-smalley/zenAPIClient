@@ -267,7 +267,7 @@ class TestTemplateRouter(object):
 
         tr = TemplateRouter(url, headers, True)
         zt = tr.get_template('Server/TEST', 'LogicalVolume')
-        with pytest.raises(ZenossAPIClientError, message="Request failed: ObjectNotFoundException"):
+        with pytest.raises(ZenossAPIClientError, match="Request failed: ObjectNotFoundException"):
             resp = zt.get_data_source('bad')
 
     def test_template_router_zenosstemplate_list_data_points(self, responses):

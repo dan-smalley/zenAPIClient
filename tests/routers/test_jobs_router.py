@@ -87,14 +87,14 @@ class TestJobsRouter(object):
         jr = JobsRouter(url, headers, True)
         resp = jr.get_job('721739ae-2b1d-4613-91e9-681f134a2c49')
         assert isinstance(resp, ZenossJob)
-        assert resp.id == "721739ae-2b1d-4613-91e9-681f134a2c49"
+        assert resp.uuid == "721739ae-2b1d-4613-91e9-681f134a2c49"
         assert resp.status == "PENDING"
 
     def test_jobs_router_get_job_not_found(self, responses):
         responses_callback(responses)
 
         jr = JobsRouter(url, headers, True)
-        with pytest.raises(ZenossAPIClientError, message="Request failed: NoSuchJobException: 0a39a730-9d41-48fb-878e-a5cbbbc1116a"):
+        with pytest.raises(ZenossAPIClientError, match="Request failed: NoSuchJobException: 0a39a730-9d41-48fb-878e-a5cbbbc1116a"):
             resp = jr.get_job('0a39a730-9d41-48fb-878e-a5cbbbc1116a')
 
     def test_jobs_router_get_log(self, responses):
