@@ -1,0 +1,5 @@
+# Required packages 
+python-dateutil>=2.6.1
+requests>=2.18.1
+sphinx-rtd-theme
+myst-parser

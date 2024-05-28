@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>zenossapi.routers.template &mdash; zenAPIClient  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            zenAPIClient
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../zenossapi.html">zenossapi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../zenossapi.routers.html">zenossapi Routers</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">zenAPIClient</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../routers.html">zenossapi.routers</a></li>
+      <li class="breadcrumb-item active">zenossapi.routers.template</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for zenossapi.routers.template</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Zenoss template_router</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">zenossapi.apiclient</span> <span class="kn">import</span> <span class="n">ZenossAPIClientError</span>
+<span class="kn">from</span> <span class="nn">zenossapi.routers</span> <span class="kn">import</span> <span class="n">ZenossRouter</span>
+
+
+<div class="viewcode-block" id="TemplateRouter">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter">[docs]</a>
+<span class="k">class</span> <span class="nc">TemplateRouter</span><span class="p">(</span><span class="n">ZenossRouter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for interacting with the Zenoss template router</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">TemplateRouter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">,</span> <span class="s1">&#39;template_router&#39;</span><span class="p">,</span> <span class="s1">&#39;TemplateRouter&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">:</span>
+            <span class="n">identifier</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">identifier</span> <span class="o">=</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="s1">&#39;&lt;</span><span class="si">{0}</span><span class="s1"> object at </span><span class="si">{1}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">identifier</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zobject</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the properties of an object.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            zobject (str): The uid of the Zenoss object (device, component,</span>
+<span class="sd">                           etc.) to get the properties of</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getInfo&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">zobject</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_template_by_uid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template_uid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets a template by its full UID</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            template_uid (str): UID of the template</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossTemplate:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">template_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getInfo&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">template_uid</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">ZenossTemplate</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_headers</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">,</span>
+            <span class="n">template_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_data_source_by_uid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datasource_uid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a data source by its full UID.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            datasource_uid (str): UID of the data source to get</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossDataSource:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_source_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getDataSourceDetails&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">datasource_uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">ZenossDataSource</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_headers</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">,</span>
+            <span class="n">data_source_data</span><span class="p">[</span><span class="s1">&#39;record&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_data_point_by_uid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datapoint_uid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a data point by its full UID.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            datapoint_uid (str): UID of the data point to get details for</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossDataPoint:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dp_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getDataPointDetails&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">datapoint_uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">ZenossDataPoint</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_headers</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">,</span>
+            <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;record&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_threshold_by_uid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold_uid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets a threshold by its full UID</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            threshold_uid (str): UID of the template</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossThreshold:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">threshold_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getThresholdDetails&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">threshold_uid</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ZenossThreshold</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_headers</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">,</span>
+            <span class="n">threshold_data</span><span class="p">[</span><span class="s1">&#39;record&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_graph_by_uid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph_uid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a graph by its full UID.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            graph_uid (str): UID of the graph to get the definition of</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossGraph:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">graph_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getGraphDefinition&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">graph_uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ZenossGraph</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_headers</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">,</span>
+            <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_find_templates_in_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">templates_data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Works through the dict structure returned by the Zenoss API for</span>
+<span class="sd">        template queries and returns the defined templates from it.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            templates_data (dict): Templates data returned by the API</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">templates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">templates_data</span><span class="p">[</span><span class="s1">&#39;children&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">node</span><span class="p">[</span><span class="s1">&#39;leaf&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">node</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;Locally Defined&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">templates</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">node</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">node</span><span class="p">[</span><span class="s1">&#39;qtip&#39;</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">templates</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_templates_in_tree</span><span class="p">(</span><span class="n">node</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">templates</span>
+
+    <span class="k">def</span> <span class="nf">_set_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">properties</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets arbitrary properties of any object.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            properties (dict): Properties and values to set</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;setInfo&#39;</span><span class="p">,</span>
+                <span class="n">properties</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="TemplateRouter.set_properties">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter.set_properties">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">properties</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets properties of an object.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            properties (dict): Properties and values to set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">properties</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ZenossAPIClientError</span><span class="p">(</span><span class="s1">&#39;Type error: Properties to set for </span><span class="si">{}</span><span class="s1"> must be a dict&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">properties</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span>
+        <span class="n">properties_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_set_properties</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">properties</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;properties&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="n">prop</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">]</span> <span class="o">=</span> <span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">properties_result</span></div>
+
+
+<div class="viewcode-block" id="TemplateRouter.get_all_templates">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter.get_all_templates">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_all_templates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns all defined templates.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(ZenossTemplate):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">templates_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_device_class_templates</span><span class="p">(</span>
+                <span class="n">device_class</span><span class="o">=</span><span class="s1">&#39;Devices&#39;</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">templates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">found_templates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_templates_in_tree</span><span class="p">(</span><span class="n">templates_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">found_templates</span><span class="p">:</span>
+            <span class="n">templates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_template_by_uid</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">templates</span></div>
+
+
+<div class="viewcode-block" id="TemplateRouter.list_all_templates">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter.list_all_templates">[docs]</a>
+    <span class="k">def</span> <span class="nf">list_all_templates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns all defined templates as a list of tuples containing the</span>
+<span class="sd">        template UID and description.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(ZenossTemplate):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">templates_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_device_class_templates</span><span class="p">(</span>
+                <span class="n">device_class</span><span class="o">=</span><span class="s1">&#39;Devices&#39;</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">templates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">found_templates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_templates_in_tree</span><span class="p">(</span><span class="n">templates_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">found_templates</span><span class="p">:</span>
+            <span class="n">templates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">templates</span></div>
+
+
+<div class="viewcode-block" id="TemplateRouter.get_device_class_templates">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter.get_device_class_templates">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_device_class_templates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_class</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the defined templates for a device class</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            device_class (str): Device class to get templates for</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(ZenossTemplate):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">templates_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getDeviceClassTemplates&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">device_class</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">templates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">found_templates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_templates_in_tree</span><span class="p">(</span><span class="n">templates_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">found_templates</span><span class="p">:</span>
+            <span class="n">templates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_template_by_uid</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">templates</span></div>
+
+
+<div class="viewcode-block" id="TemplateRouter.list_device_class_templates">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter.list_device_class_templates">[docs]</a>
+    <span class="k">def</span> <span class="nf">list_device_class_templates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_class</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the defined templates for a device class as a list of</span>
+<span class="sd">        tuples containing the template UID and description.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            device_class (str): Device class to list templates for</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(str):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">device_class</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Devices&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">device_class</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>
+                <span class="n">device_class</span> <span class="o">=</span> <span class="s1">&#39;Devices</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device_class</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">device_class</span> <span class="o">=</span> <span class="s1">&#39;Devices/</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device_class</span><span class="p">)</span>
+        <span class="n">templates_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getDeviceClassTemplates&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">device_class</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">templates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">found_templates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_templates_in_tree</span><span class="p">(</span><span class="n">templates_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">found_templates</span><span class="p">:</span>
+            <span class="n">templates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">templates</span></div>
+
+
+<div class="viewcode-block" id="TemplateRouter.get_object_templates">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter.get_object_templates">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_object_templates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zenoss_object</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the templates bound to a specific object</span>
+<span class="sd">        (monitored resource or component)</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            zenoss_object (str): The uid of the object, e.g.</span>
+<span class="sd">                        Devices/Server/Zuora/Aspose/devices/10.aspose.prod.slv.zuora</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(ZenossTemplate):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">zenoss_object</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Devices&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">zenoss_object</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>
+                <span class="n">zenoss_object</span> <span class="o">=</span> <span class="s1">&#39;Devices</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zenoss_object</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">zenoss_object</span> <span class="o">=</span> <span class="s1">&#39;Devices/</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zenoss_object</span><span class="p">)</span>
+
+        <span class="n">templates_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getObjTemplates&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">zenoss_object</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">templates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">found_templates</span> <span class="o">=</span> <span class="n">templates_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">found_templates</span><span class="p">:</span>
+            <span class="n">templates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_template_by_uid</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">templates</span></div>
+
+
+<div class="viewcode-block" id="TemplateRouter.get_template">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter.get_template">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_class</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a Zenoss template</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            device_class (str): Name of the device class where the template is defined</span>
+<span class="sd">            template (str): Name of the template to get</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossTemplate:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check to see if this is a local template instead of a device class</span>
+        <span class="c1"># template</span>
+        <span class="k">if</span> <span class="s2">&quot;devices&quot;</span> <span class="ow">in</span> <span class="n">device_class</span><span class="p">:</span>
+            <span class="n">template_uid</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device_class</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">template_uid</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/rrdTemplates/</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device_class</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_template_by_uid</span><span class="p">(</span><span class="n">template_uid</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TemplateRouter.add_template">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter.add_template">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a template to a device class.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            target (str): The uid of the target device class</span>
+<span class="sd">            name (str): Unique name of the template to add</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossTemplate:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Devices&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;Devices</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="s1">&#39;Devices/</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;rrdTemplates&#39;</span><span class="p">):</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span> <span class="o">+</span> <span class="s1">&#39;/rrdTemplates&#39;</span>
+
+        <span class="n">template_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;addTemplate&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="nb">id</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">targetUid</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_template_by_uid</span><span class="p">(</span><span class="n">template_data</span><span class="p">[</span><span class="s1">&#39;nodeConfig&#39;</span><span class="p">][</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="TemplateRouter.delete_template">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter.delete_template">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">device_class</span><span class="p">,</span> <span class="n">template</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes a template.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            device_class (str): Name of the device class where the template is defined</span>
+<span class="sd">            template (str): Name of the template to remove</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">             dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">device_class</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Devices&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">device_class</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>
+                <span class="n">device_class</span> <span class="o">=</span> <span class="s1">&#39;Devices</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device_class</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">device_class</span> <span class="o">=</span> <span class="s1">&#39;Devices/</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device_class</span><span class="p">)</span>
+
+        <span class="n">template_uid</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/rrdTemplates/</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">device_class</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;deleteTemplate&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">template_uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TemplateRouter.add_local_template">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter.add_local_template">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_local_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zenoss_object</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a local template to an object.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">             zenoss_object (str): Uid of the object to add the local template to</span>
+<span class="sd">             name (str): Unique name for the new local template</span>
+
+<span class="sd">         Returns:</span>
+<span class="sd">             ZenossTemplate:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">zenoss_object</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Devices&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">zenoss_object</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>
+                <span class="n">zenoss_object</span> <span class="o">=</span> <span class="s1">&#39;Devices</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zenoss_object</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">zenoss_object</span> <span class="o">=</span> <span class="s1">&#39;Devices/</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zenoss_object</span><span class="p">)</span>
+
+        <span class="n">template_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;addLocalRRDTemplate&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">uid</span><span class="o">=</span><span class="n">zenoss_object</span><span class="p">,</span>
+                    <span class="n">templateName</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_template_by_uid</span><span class="p">(</span><span class="n">template_data</span><span class="p">[</span><span class="s1">&#39;nodeConfig&#39;</span><span class="p">][</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="TemplateRouter.delete_local_template">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter.delete_local_template">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_local_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zenoss_object</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Builds the request data for deleting a local template to an object.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">             object (str): Uid of the object to remove the local template from</span>
+<span class="sd">             name (str): Unique name of the new local template</span>
+
+<span class="sd">         Returns:</span>
+<span class="sd">             dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">zenoss_object</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Devices&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">zenoss_object</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">):</span>
+                <span class="n">zenoss_object</span> <span class="o">=</span> <span class="s1">&#39;Devices</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zenoss_object</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">zenoss_object</span> <span class="o">=</span> <span class="s1">&#39;Devices/</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">zenoss_object</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;removeLocalRRDTemplate&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">uid</span><span class="o">=</span><span class="n">zenoss_object</span><span class="p">,</span>
+                    <span class="n">templateName</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TemplateRouter.get_data_source_types">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter.get_data_source_types">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_data_source_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the list of available data source types.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ds_types_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getDataSourceTypes&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">data_source_types</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ds_type</span> <span class="ow">in</span> <span class="n">ds_types_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="n">data_source_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ds_type</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">data_source_types</span></div>
+
+
+<div class="viewcode-block" id="TemplateRouter.get_threshold_types">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter.get_threshold_types">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_threshold_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the list of available threshold types.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">threshold_types_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getThresholdTypes&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">threshold_types</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">threshold_type</span> <span class="ow">in</span> <span class="n">threshold_types_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="n">threshold_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">threshold_type</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">threshold_types</span></div>
+
+
+<div class="viewcode-block" id="TemplateRouter.add_data_point_to_graph">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.TemplateRouter.add_data_point_to_graph">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_data_point_to_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">include_thresholds</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a data point to a graph.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            datapoint (str): Uid of the data point to add</span>
+<span class="sd">            graph (str): Uid of the graph to add the data point to</span>
+<span class="sd">            include_thresholds (bool): Set to True to include the related</span>
+<span class="sd">                                       thresholds for the data point</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;addDataPointToGraph&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">dataPointUid</span><span class="o">=</span><span class="n">datapoint</span><span class="p">,</span>
+                    <span class="n">graphUid</span><span class="o">=</span><span class="n">graph</span><span class="p">,</span>
+                    <span class="n">includeThresholds</span><span class="o">=</span><span class="n">include_thresholds</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ZenossTemplate">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate">[docs]</a>
+<span class="k">class</span> <span class="nc">ZenossTemplate</span><span class="p">(</span><span class="n">TemplateRouter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for Zenoss Template objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">,</span> <span class="n">template_data</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ZenossTemplate</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">definition</span> <span class="o">=</span> <span class="n">template_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;definition&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">template_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="n">template_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;hidden&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">iconCls</span> <span class="o">=</span> <span class="n">template_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;iconCls&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">template_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inspector_type</span> <span class="o">=</span> <span class="n">template_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;inspector_type&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leaf</span> <span class="o">=</span> <span class="n">template_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;leaf&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">meta_type</span> <span class="o">=</span> <span class="n">template_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;meta_type&#39;</span><span class="p">,</span> <span class="s1">&#39;RRDTemplate&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">template_data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">qtip</span> <span class="o">=</span> <span class="n">template_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;qtip&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">targetPythonClass</span> <span class="o">=</span> <span class="n">template_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;targetPythonClass&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">template_data</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39;uid&#39;</span> <span class="ow">in</span> <span class="n">template_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="n">template_data</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="ZenossTemplate.copy">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Copy a template to another device or device class.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            target (str): Uid of the device or device class to copy to</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossTemplate:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;rrdTemplates&#39;</span><span class="p">):</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="n">target</span> <span class="o">+</span> <span class="s1">&#39;/rrdTemplates&#39;</span>
+        <span class="n">template_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;copyTemplate&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span>
+                    <span class="n">targetUid</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">ZenossTemplate</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_headers</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">,</span>
+            <span class="n">template_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.delete">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Removes a template.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;deleteTemplate&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.get_data_sources">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.get_data_sources">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_data_sources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets data sources configured for a template.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(ZenossDataSource):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ds_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getDataSources&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">datasources</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">ds_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="n">datasources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">ZenossDataSource</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">api_headers</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">,</span>
+                    <span class="n">ds</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">datasources</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.list_data_sources">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.list_data_sources">[docs]</a>
+    <span class="k">def</span> <span class="nf">list_data_sources</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Rerturns data sources configured for a template as a list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(str):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ds_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getDataSources&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">datasources</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="n">ds_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="n">datasources</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ds</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">datasources</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.get_data_source">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.get_data_source">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_data_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datasource</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a particular data source.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            datasource (str): Name of the data source to get</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossDataSource:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">datasource_uid</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/datasources/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">datasource</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_source_by_uid</span><span class="p">(</span><span class="n">datasource_uid</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.add_data_source">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.add_data_source">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_data_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datasource</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a data source to a template.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            datasource (str): Name of the new data source</span>
+<span class="sd">            type (str): Type of the new data source, must be one of the types</span>
+<span class="sd">                        returned by get_data_source_types()</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossDataSource:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;addDataSource&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">templateUid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">datasource</span><span class="p">,</span>
+                    <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_source_by_uid</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/datasources/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">datasource</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.delete_data_source">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.delete_data_source">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_data_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datasource</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a data source from a template.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            datasource (str): Name the data source to remove</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">datasource_uid</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/datasources/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">datasource</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;deleteDataSource&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">datasource_uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.get_data_points">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.get_data_points">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all the data points in a template.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(ZenossDataPoint):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dp_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getDataPoints&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">datapoints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dp</span> <span class="ow">in</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="n">datapoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">ZenossDataPoint</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">api_headers</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">,</span>
+                    <span class="n">dp</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">datapoints</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.list_data_points">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.list_data_points">[docs]</a>
+    <span class="k">def</span> <span class="nf">list_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns all the data points in a template as a list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(str):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dp_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getDataPoints&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">datapoints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dp</span> <span class="ow">in</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="n">datapoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">datapoints</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.get_thresholds">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.get_thresholds">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_thresholds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the thresholds of a template.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(ZenossThresholds):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">threshold_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getThresholds&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">thresholds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">threshold_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="n">thresholds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">ZenossThreshold</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">api_headers</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">,</span>
+                    <span class="n">t</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">thresholds</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.list_thresholds">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.list_thresholds">[docs]</a>
+    <span class="k">def</span> <span class="nf">list_thresholds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the thresholds of a template as a list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(str):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">threshold_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getThresholds&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">thresholds</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">threshold_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="n">thresholds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">thresholds</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.get_threshold">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.get_threshold">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a particular threshold.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            threshold (str): Name of the threshold to get details on</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossThreshold:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">threshold_uid</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/thresholds/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_threshold_by_uid</span><span class="p">(</span><span class="n">threshold_uid</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.add_threshold">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.add_threshold">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">threshold_type</span><span class="p">,</span> <span class="n">datapoints</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a threshold to a template.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            threshold (str): Name of the new threshold</span>
+<span class="sd">            threshold_type (str): Type of the new threshold, must be one of the types</span>
+<span class="sd">                        returned by get_threshold_types()</span>
+<span class="sd">            datapoints (list): List of datapoints to select for the threshold</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossThreshold:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">datapoints</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ZenossAPIClientError</span><span class="p">(</span><span class="s1">&#39;Type error: datapoints to add to a threshold must be a list&#39;</span><span class="p">)</span>
+
+        <span class="n">response_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;addThreshold&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span>
+                    <span class="n">thresholdId</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span>
+                    <span class="n">thresholdType</span><span class="o">=</span><span class="n">threshold_type</span><span class="p">,</span>
+                    <span class="n">dataPoints</span><span class="o">=</span><span class="n">datapoints</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_threshold_by_uid</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/thresholds/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.delete_threshold">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.delete_threshold">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a threshold.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            threshold (str): Name of the threshold to remove</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">threshold_uid</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/thresholds/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;removeThreshold&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">threshold_uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.get_graphs">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.get_graphs">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_graphs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the graphs defined for a template.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(ZenossGraph):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">graphs_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getGraphs&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">graphs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">graphs_data</span><span class="p">:</span>
+            <span class="n">graphs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">ZenossGraph</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">api_headers</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">,</span>
+                    <span class="n">g</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">graphs</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.list_graphs">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.list_graphs">[docs]</a>
+    <span class="k">def</span> <span class="nf">list_graphs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the graphs defined for a template as a list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(str):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">graphs_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getGraphs&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">graphs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">graphs_data</span><span class="p">:</span>
+            <span class="n">graphs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">graphs</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.get_graph">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.get_graph">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a particular graph.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            graph (str): Name of the graph to get the definition of</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossGraph:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">graph_uid</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/graphDefs/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">graph</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_graph_by_uid</span><span class="p">(</span><span class="n">graph_uid</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.add_graph">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.add_graph">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a new graph to a template.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            graph (str): Name for the new graph</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossGraph:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;addGraphDefinition&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">templateUid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span>
+                    <span class="n">graphDefinitionId</span><span class="o">=</span><span class="n">graph</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_graph_by_uid</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/graphDefs/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">graph</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossTemplate.delete_graph">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossTemplate.delete_graph">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete a particular graph.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            graph (str): The name of the graph to delete.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">graph_uid</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/graphDefs/</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">graph</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;deleteGraphDefinition&#39;</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">uid</span><span class="o">=</span><span class="n">graph_uid</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ZenossDataSource">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossDataSource">[docs]</a>
+<span class="k">class</span> <span class="nc">ZenossDataSource</span><span class="p">(</span><span class="n">TemplateRouter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for Zenoss template data sources</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">,</span> <span class="n">ds_data</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ZenossDataSource</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">)</span>
+
+        <span class="n">uid</span> <span class="o">=</span> <span class="n">ds_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;uid&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="n">uid</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">ds_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">ds_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eventClass</span> <span class="o">=</span> <span class="n">ds_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;eventClass&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eventKey</span> <span class="o">=</span> <span class="n">ds_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;eventKey&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">ds_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;severity&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">ds_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">ds_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;component&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">ds_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/datasources/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="ZenossDataSource.delete">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossDataSource.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a data source from a template.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;deleteDataSource&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossDataSource.get_data_points">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossDataSource.get_data_points">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all the data points for a datasource.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(ZenossDataPoint):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dp_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getDataPoints&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">datapoints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dp</span> <span class="ow">in</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">dp</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+                <span class="n">datapoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">ZenossDataPoint</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">api_headers</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">,</span>
+                        <span class="n">dp</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">datapoints</span></div>
+
+
+<div class="viewcode-block" id="ZenossDataSource.list_data_points">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossDataSource.list_data_points">[docs]</a>
+    <span class="k">def</span> <span class="nf">list_data_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns all the data points for a datasource as a list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(str):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dp_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getDataPoints&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">datapoints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dp</span> <span class="ow">in</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">dp</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+                <span class="n">datapoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">datapoints</span></div>
+
+
+<div class="viewcode-block" id="ZenossDataSource.get_data_point">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossDataSource.get_data_point">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_data_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a particular data point.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            datapoint (str): Name of the data point to get details for</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossDataPoint:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">datapoint_uid</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/datapoints/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_point_by_uid</span><span class="p">(</span><span class="n">datapoint_uid</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossDataSource.add_data_point">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossDataSource.add_data_point">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_data_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a data point to a data source.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            datapoint (str): Name of the new data point</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossDataPoint:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;addDataPoint&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">dataSourceUid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">datapoint</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_point_by_uid</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/datapoints/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossDataSource.delete_data_point">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossDataSource.delete_data_point">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_data_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a data point from a template.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            datapoint (str): Name of the data point to remove</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">datapoint_uid</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/datapoints/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;deleteDataPoint&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="n">datapoint_uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ZenossDataPoint">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossDataPoint">[docs]</a>
+<span class="k">class</span> <span class="nc">ZenossDataPoint</span><span class="p">(</span><span class="n">TemplateRouter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for Zenoss data points</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">,</span> <span class="n">dp_data</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ZenossDataPoint</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">isrow</span> <span class="o">=</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;isrow&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">leaf</span> <span class="o">=</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;leaf&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rrdmin</span> <span class="o">=</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;rrdmin&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rate</span> <span class="o">=</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;rate&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">newId</span> <span class="o">=</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;newId&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createCmd</span> <span class="o">=</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;createCmd&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rrdtype</span> <span class="o">=</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;rrdtype&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rrdmax</span> <span class="o">=</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;rrdmax&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aliases</span> <span class="o">=</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;aliases&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="n">dp_data</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/datapoints/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="ZenossDataPoint.set_threshold">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossDataPoint.set_threshold">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">threshold_type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a threshold for the data point</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            threshold (str): Name of the threshold to add</span>
+<span class="sd">            threshold_type (str): Type of the new threshold, must be one of the</span>
+<span class="sd">                        types returned by get_threshold_types()</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossThreshold:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/datasources/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">response_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;addThreshold&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">uid</span><span class="o">=</span><span class="n">template</span><span class="p">,</span>
+                    <span class="n">thresholdId</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span>
+                    <span class="n">thresholdType</span><span class="o">=</span><span class="n">threshold_type</span><span class="p">,</span>
+                    <span class="n">dataPoints</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_threshold_by_uid</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/thresholds/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossDataPoint.make_counter">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossDataPoint.make_counter">[docs]</a>
+    <span class="k">def</span> <span class="nf">make_counter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the RRD Type of the data point to COUNTER</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_properties</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">rrdtype</span><span class="o">=</span><span class="s1">&#39;COUNTER&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rrdtype</span> <span class="o">=</span> <span class="s1">&#39;COUNTER&#39;</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="ZenossDataPoint.make_gauge">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossDataPoint.make_gauge">[docs]</a>
+    <span class="k">def</span> <span class="nf">make_gauge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the RRD Type of the data point to GAUGE</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_properties</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">rrdtype</span><span class="o">=</span><span class="s1">&#39;GAUGE&#39;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rrdtype</span> <span class="o">=</span> <span class="s1">&#39;GAUGE&#39;</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="ZenossDataPoint.add_to_graph">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossDataPoint.add_to_graph">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_to_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">include_thresholds</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a data point to a graph.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            graph (str): Name of the graph to add the data point to</span>
+<span class="sd">            include_thresholds (bool): Set to True to include the related</span>
+<span class="sd">                                       thresholds for the data point</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">graph_uid</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/graphDefs/</span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/datasources/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">graph</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_data_point_to_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">graph_uid</span><span class="p">,</span> <span class="n">include_thresholds</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossDataPoint.delete">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossDataPoint.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a data point from a template.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;deleteDataPoint&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ZenossThreshold">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossThreshold">[docs]</a>
+<span class="k">class</span> <span class="nc">ZenossThreshold</span><span class="p">(</span><span class="n">TemplateRouter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for Zenoss thresholds</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">,</span> <span class="n">threshold_data</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ZenossThreshold</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">threshold_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="n">threshold_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;enabled&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">threshold_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataPoints</span> <span class="o">=</span> <span class="n">threshold_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;dataPoints&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eventClass</span> <span class="o">=</span> <span class="n">threshold_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;eventClass&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">threshold_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">threshold_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">threshold_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;severity&#39;</span><span class="p">)</span>
+        <span class="n">uid</span> <span class="o">=</span> <span class="n">threshold_data</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;uid&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="n">uid</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/thresholds/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="n">threshold_data</span>
+
+<div class="viewcode-block" id="ZenossThreshold.set_max">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossThreshold.set_max">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">maxval</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the threshold value for a MinMaxThreshold checking the max</span>
+<span class="sd">        value of a data point.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            maxval (str): Maximum value for the data point before alerting</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_properties</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">maxval</span><span class="o">=</span><span class="n">maxval</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;maxval&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">maxval</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="ZenossThreshold.set_min">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossThreshold.set_min">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">minval</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the threshold value for a MinMaxThreshold checking the minimum</span>
+<span class="sd">        value of a data point.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            minval (str): Minimum value for the data point before alerting</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_properties</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">minval</span><span class="o">=</span><span class="n">minval</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="s1">&#39;minval&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">minval</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="ZenossThreshold.delete">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossThreshold.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a threshold.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;removeThreshold&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ZenossGraph">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossGraph">[docs]</a>
+<span class="k">class</span> <span class="nc">ZenossGraph</span><span class="p">(</span><span class="n">TemplateRouter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for Zenoss graphs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">,</span> <span class="n">graph_data</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ZenossGraph</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;sequence&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;height&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">miny</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;miny&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxy</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;maxy&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">autoscale</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;autoscale&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;log&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;custom&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;width&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">graphPoints</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;graphPoints&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rrdVariables</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;rrdVariables&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;units&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hasSummary</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;hasSummary&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ceiling</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;ceiling&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;base&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uid</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/graphDefs/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="ZenossGraph.delete">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossGraph.delete">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete the graph.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;deleteGraphDefinition&#39;</span><span class="p">,</span>
+                <span class="n">data</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossGraph.get_points">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossGraph.get_points">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets the data points of a graph.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(ZenossDataPoint):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">points_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getGraphPoints&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="n">point_datasource</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;dpName&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_point_by_uid</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/datasources/</span><span class="si">{1}</span><span class="s1">/datapoints/</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">point_datasource</span><span class="p">,</span> <span class="n">p</span><span class="p">[</span><span class="s1">&#39;dpName&#39;</span><span class="p">]))</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">points</span></div>
+
+
+<div class="viewcode-block" id="ZenossGraph.list_points">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossGraph.list_points">[docs]</a>
+    <span class="k">def</span> <span class="nf">list_points</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the data points of a graph as a list.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(str):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">points_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getGraphPoints&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">points_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]:</span>
+            <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="s1">&#39;uid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/zport/dmd/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">points</span></div>
+
+
+<div class="viewcode-block" id="ZenossGraph.add_point">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossGraph.add_point">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datasource</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">,</span> <span class="n">include_thresholds</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a data point to a graph.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            datasource (str): Name of the data source holding the data point</span>
+<span class="sd">            datapoint (str): Name of the data point to add</span>
+<span class="sd">            include_thresholds (bool): Set to True to include the related</span>
+<span class="sd">                                       thresholds for the data point</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">datapoint_uid</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">/datasources/</span><span class="si">{1}</span><span class="s1">/datapoints/</span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">,</span> <span class="n">datasource</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_data_point_to_graph</span><span class="p">(</span><span class="n">datapoint_uid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">include_thresholds</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossGraph.set_graph_properties">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossGraph.set_graph_properties">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_graph_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">properties</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the properties for a graph.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            properties (dict): Properties and values to set</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">properties</span><span class="p">)</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;setGraphDefinition&#39;</span><span class="p">,</span>
+                <span class="n">data</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">properties</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">response_data</span></div>
+
+
+<div class="viewcode-block" id="ZenossGraph.set_zero_baseline">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossGraph.set_zero_baseline">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_zero_baseline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the minimum value of a graph display to zero. By default</span>
+<span class="sd">        Zenoss graph scale is dynamic, meaning the display</span>
+<span class="sd">        can be skewed because the minimum value isn&#39;t fixed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_graph_properties</span><span class="p">(</span>
+            <span class="n">properties</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">miny</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossGraph.set_point_sequence">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossGraph.set_point_sequence">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_point_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datapoints</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets the order of data points in a graph.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            datapoints (list): List of data point names in the desired order</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">datapoints</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ZenossAPIClientError</span><span class="p">(</span><span class="s1">&#39;Type error: Sequence of datapoints must be a list&#39;</span><span class="p">)</span>
+
+        <span class="n">graph_points</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">datapoints</span><span class="p">:</span>
+            <span class="n">graph_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/graphPoints/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;setGraphPointSequence&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uids</span><span class="o">=</span><span class="n">graph_points</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ZenossGraph.delete_point">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossGraph.delete_point">[docs]</a>
+    <span class="k">def</span> <span class="nf">delete_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a data point from a graph.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            datapoint (str): Name of the data point to remove</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;deleteGraphPoint&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">/graphPoints/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span> <span class="n">datapoint</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">graph_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getGraphDefinition&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">graphPoints</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;graphPoints&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rrdVariables</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;rrdVariables&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">response_data</span></div>
+
+
+<div class="viewcode-block" id="ZenossGraph.add_graph_threshold">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.template.ZenossGraph.add_graph_threshold">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_graph_threshold</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds a threshold to a graph.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            threshold (str): Uid of the threshold to add</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;addThresholdToGraph&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">graphUid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">,</span>
+                    <span class="n">thresholdUid</span><span class="o">=</span><span class="n">threshold</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">graph_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getGraphDefinition&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">uid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">uid</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">graphPoints</span> <span class="o">=</span> <span class="n">graph_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="s1">&#39;graphPoints&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">response_data</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Dan Smalley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
