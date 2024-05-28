@@ -7,7 +7,7 @@
 # To get a newer version, you will need to update the SHA.
 # You can also reference a tag or branch, but the action may change without warning.
 
-name: TestPyPI Package Upload
+name: PyPI Package Upload
 
 on:
   release:
@@ -17,7 +17,7 @@ jobs:
   testpypi_upload:
     runs-on: ubuntu-latest
     environment:
-      name: testpypi
+      name: Dev
     permissions:
       id-token: write
     steps:
