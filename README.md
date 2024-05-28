@@ -1,6 +1,6 @@
 # Zenoss API Client
 
-![Tests badge](https://github.com/dan-smalley/zenAPIClient/actions/workflows/python-test.yml/badge.svg) 
+![Tests badge](https://github.com/dan-smalley/zenAPIClient/actions/workflows/test_and_lint.yml/badge.svg) 
 [![Documentation Status](https://readthedocs.org/projects/zenapiclient/badge/?version=latest)](https://zenapiclient.readthedocs.io/en/latest/?badge=latest) 
 [![Coverage Status](https://dan-smalley.github.io/zenAPIClient/coveragecoverage-badge.svg?dummy=8484744)](https://dan-smalley.github.io/zenAPIClient/index.html)
 ![PyPI - Version](https://img.shields.io/pypi/v/zenAPIClient?pypiBaseUrl=https%3A%2F%2Ftest.pypi.org&logo=pypi&label=TestPyPI) 
