@@ -166,17 +166,17 @@ class TestDeviceManagementRouter(object):
 
     def test_devicemanagement_router_add_maintenance_window_bad_repeat(self):
         dmr = DeviceManagementRouter(url, headers, False)
-        with pytest.raises(ZenossAPIClientError, message="Request failed: Invalid maintenance window repetition: Bogus"):
+        with pytest.raises(ZenossAPIClientError, match="Invalid maintenance window repetition: Bogus"):
             resp = dmr.add_maintenance_window('Server/TEST', 'TestAddWindow', '1511290393', '01:00:00', repeat='Bogus')
 
     def test_devicemanagement_router_add_maintenance_window_bad_occurrence(self):
         dmr = DeviceManagementRouter(url, headers, False)
-        with pytest.raises(ZenossAPIClientError, message="Request failed: Invalid maintenance window occurrence: Bogus"):
+        with pytest.raises(ZenossAPIClientError, match="Invalid maintenance window occurrence: Bogus"):
             resp = dmr.add_maintenance_window('Server/TEST', 'TestAddWindow', '1511290393', '01:00:00', occurrence='Bogus')
 
     def test_devicemanagement_router_add_maintenance_window_bad_days(self):
         dmr = DeviceManagementRouter(url, headers, False)
-        with pytest.raises(ZenossAPIClientError, message="Request failed: Invalid maintenance window days: Bogus"):
+        with pytest.raises(ZenossAPIClientError, match="Invalid maintenance window days: Bogus"):
             resp = dmr.add_maintenance_window('Server/TEST', 'TestAddWindow', '1511290393', '01:00:00', days='Bogus')
 
     def test_devicemanagement_router_list_user_commands(self, responses):
@@ -252,7 +252,7 @@ class TestDeviceManagementRouter(object):
         responses_callback(responses)
 
         dmr = DeviceManagementRouter(url, headers, False)
-        with pytest.raises(ZenossAPIClientError, message="Request failed: Exception: Add new command failed. Incorrect or missing password."):
+        with pytest.raises(ZenossAPIClientError, match="Request failed: Exception: Add new command failed. Incorrect or missing password."):
             resp = dmr.add_user_command('Server/TEST/devices/test.example.com', 'uname_a', 'uname -a', 'uname -a', 'bogus')
 
     def test_devicemanagement_router_list_admin_users(self, responses):
@@ -389,7 +389,7 @@ class TestDeviceManagementRouter(object):
 
         dmr = DeviceManagementRouter(url, headers, False)
         uc = dmr.get_user_command_by_name('Server/TEST/devices/test2.example.com', 'uname_a')
-        with pytest.raises(ZenossAPIClientError, message="Request failed: Exception: Update failed. Incorrect or missing password."):
+        with pytest.raises(ZenossAPIClientError, match="Request failed: Exception: Update failed. Incorrect or missing password."):
             resp = uc.update(description="Run uname -a command", password="bogus")
 
     def test_devicemanagement_router_zenossdevicemanagementadmin_update(self, responses):
