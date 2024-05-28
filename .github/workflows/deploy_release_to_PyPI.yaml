@@ -19,6 +19,8 @@ jobs:
     with:
       workflow-environment: Dev
       pypi-url: https://test.pypi.org/legacy/
+    permissions:
+      id-token: write
 
   prod_pypi_upload:
     needs: test_pypi_upload
@@ -26,3 +28,5 @@ jobs:
     with:
       workflow-environment: Prod
       pypi-url: https://pypi.org/legacy/
+    permissions:
+      id-token: write
