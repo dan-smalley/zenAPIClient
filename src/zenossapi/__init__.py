@@ -1,6 +1,3 @@
-__major__ = '0'
-__minor__ = '2'
-__update__ = '7'
-__version__ = '{0}.{1}'.format(__major__, __minor__)
-__release__ = '{0}.{1}'.format(__version__, __update__)
 
+from . import _version
+__version__ = _version.get_versions()['version']

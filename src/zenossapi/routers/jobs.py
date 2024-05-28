@@ -26,7 +26,7 @@ class JobsRouter(ZenossRouter):
             type(self).__name__, identifier
         )
 
-    def _abort_jobs_by_uuid(self, jobs):
+    def abort_jobs_by_uuid(self, jobs):
         """
         Aborts the jobs specified in the uuid list.
 
@@ -45,7 +45,7 @@ class JobsRouter(ZenossRouter):
 
         return True
 
-    def _delete_jobs_by_uuid(self, jobs):
+    def delete_jobs_by_uuid(self, jobs):
         """
         Deletes the jobs specified in the uuid list.
 
@@ -174,17 +174,12 @@ class ZenossJob(JobsRouter):
 
         self.description = job_data['description']
         self.duration = job_data['duration']
-        self.errors = job_data['errors']
         self.finished = job_data['finished']
-        self.id = job_data['id']
         self.logfile = job_data['logfile']
-        self.meta_type = job_data['meta_type']
-        self.name = job_data['name']
         self.scheduled = job_data['scheduled']
         self.started = job_data['started']
         self.status = job_data['status']
         self.type = job_data['type']
-        self.uid = job_data['uid']
         self.user = job_data['user']
         self.uuid = job_data['uuid']
 
@@ -195,7 +190,7 @@ class ZenossJob(JobsRouter):
         Returns:
             bool:
         """
-        return self._abort_jobs_by_uuid([self.uuid])
+        return self.abort_jobs_by_uuid([self.uuid])
 
     def delete(self):
         """
@@ -204,7 +199,7 @@ class ZenossJob(JobsRouter):
         Returns:
             list: Job ID
         """
-        return self._delete_jobs_by_uuid([self.uuid])
+        return self.delete_jobs_by_uuid([self.uuid])
 
     def get_log(self):
         """
