@@ -15,14 +15,14 @@ on:
 
 jobs:
   test_pypi_upload:
-    uses: dan-smalley/zenAPIClient/.github/workflows/PyPI_package_upload.yaml@main
+    uses: ./.github/workflows/PyPI_package_upload.yaml
     with:
       workflow-environment: Dev
       pypi-url: https://test.pypi.org/legacy/
 
   prod_pypi_upload:
     needs: test_pypi_upload
-    uses: dan-smalley/zenAPIClient/.github/workflows/PyPI_package_upload.yaml@main
+    uses: ./.github/workflows/PyPI_package_upload.yaml
     with:
       workflow-environment: Prod
       pypi-url: https://pypi.org/legacy/
