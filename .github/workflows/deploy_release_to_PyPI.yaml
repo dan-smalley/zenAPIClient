@@ -27,6 +27,6 @@ jobs:
     uses: ./.github/workflows/PyPI_package_upload.yaml
     with:
       workflow-environment: Prod
-      pypi-url: https://pypi.org/legacy/
+      pypi-url: https://pypi.org/p/zenAPIClient
     permissions:
       id-token: write
