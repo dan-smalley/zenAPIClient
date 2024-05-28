@@ -7,8 +7,6 @@ Zenoss API Client Class
 import inspect
 import os
 import urllib3
-from distutils.util import strtobool
-
 
 class ZenossAPIClientError(Exception):
     pass
@@ -16,6 +14,16 @@ class ZenossAPIClientError(Exception):
 
 class ZenossAPIClientAuthenticationError(Exception):
     pass
+
+
+def strtobool(_string):
+    """Converts a string to a boolean, replaces distutils.utils.strtobool (deprecated per PEP 632)"""
+    if _string in ['y', 'yes', 't', 'true', 'on', '1', 1]:
+        return True
+    elif _string in ['n', 'no', 'f', 'false', 'off', '0', 0]:
+        return False
+    else:
+        raise ZenossAPIClientError(f"Invalid boolean value: {_string}")
 
 
 class Client(object):

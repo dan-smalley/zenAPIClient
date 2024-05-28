@@ -57,10 +57,130 @@ class DeviceRouter(ZenossRouter):
             type(self).__name__, identifier
         )
 
+    def object_exists(self, uid):
+
+        object_data = self._router_request(
+            self._make_request_data(
+                'objectExists',
+                dict(uid=uid)
+            )
+        )
+
+        return object_data['exists']
+
+    def add_node(self, type, contextUid, id, description=""):
+        """
+        Adds a node to the node tree
+        Args:
+            type: Class, Group or System
+            contextUid: The existing node to add the new node to
+            id: name of the node
+            description: optional description
+
+        Returns: (bool) success
+
+        """
+        group_data = self._router_request(
+            self._make_request_data(
+                'addNode',
+                dict(type=type,
+                     contextUid=contextUid,
+                     id=id,
+                     description=description)
+            )
+        )
+
+        return group_data['success']
+
+    def delete_node(self, uid):
+        """
+        Removes a node from the node tree
+        Args:
+            uid: (str) UID of node to delte from tree
+
+        Returns: (bool) success
+
+        """
+        group_data = self._router_request(
+            self._make_request_data(
+                'deleteNode',
+                dict(uid=uid)
+            )
+        )
+
+        return group_data['success']
+
+    def get_device_uids(self, uid):
+
+        uid_data = self._router_request(
+            self._make_request_data(
+                'getDeviceUids',
+                dict(uid=uid)
+            )
+        )
+
+        uid_list = dict(
+            total=len(uid_data['devices']),
+            uids=uid_data['devices']
+        )
+
+        return uid_list
+
+    def list_devices(self, uid=None, params=None, start=0, limit=50, sort='name',
+                     dir='ASC'):
+        """
+        Get the devices contained in a device class. Supports pagination.
+
+        Arguments:
+            uid (str): The uid of the organizer to get devices from
+            params (dict): Key/value filters for the search, options are
+                name, ipAddress, deviceClass, or productionState
+            start (int): Offset to start device list from, default 0
+            limit (int): The number of results to return, default 50
+            sort (str): Sort key for the list, default is 'name'
+            dir (str): Sort order, either 'ASC' or 'DESC', default is 'ASC'
+
+        Returns:
+            dict(int, str, list(ZenossDevice)): ::
+
+            {
+                'total': Total number of devices found
+                 'hash': Hashcheck to determine if any devices have changed,
+                 'devices': ZenossDevice objects,
+            }
+
+        """
+        device_data = self._router_request(
+            self._make_request_data(
+                'getDevices',
+                dict(
+                    uid=uid,
+                    params=params,
+                    start=start,
+                    limit=limit,
+                    sort=sort,
+                    dir=dir,
+                )
+            )
+        )
+
+        device_list = dict(
+            total=device_data['totalCount'],
+            hash=device_data['hash'],
+            devices=[]
+        )
+        for device in device_data['devices']:
+            device_list['devices'].append(self.get_device_by_uid(
+                device['uid'].replace('/zport/dmd/', '', 1)))
+
+        return device_list
+
     def _find_nodes_in_tree(self, tree_data):
         """
         Works through the dict structure returned by the Zenoss API for
         a device class tree and returns the nodes.
+
+        Laving private along with _climb_tree as tree traversal can be hazardous.
 
         Arguments:
             tree_data (dict): Templates data returned by the API
@@ -80,7 +200,49 @@ class DeviceRouter(ZenossRouter):
 
         return tree
 
-    def _get_info_by_uid(self, uid):
+    def _climb_tree(self, tree_data, include_details, _root_path=True):
+        """
+        A more advanced version of _find_nodes_in_tree that will return
+        a dictionary-only structure instead of the mixed dict/list structure
+        of the original.  Also includes the otion to include details about each branch.
+
+        Args:
+            tree_data (dict): The tree returned by the API call
+            include_details (bool): If True returns all details from the getTree API call
+                If false only includes the structure of dictionaries
+            _root_path (bool): Used as a control within the function to avoid writing
+                duplicate data.  Probably a more elegant way to do this.
+
+        Returns:
+            dict: Dict of the tree structure
+
+        """
+        if include_details is True:
+            tree = dict(count=tree_data['text']['count'],
+                        uid=tree_data['uid'],
+                        id=tree_data['id'],
+                        path=tree_data['path'],
+                        uuid=tree_data['uuid']
+                        )
+        else:
+            tree = {}
+        for node in tree_data['children']:
+            node_children = self._climb_tree(node, include_details, _root_path=False)
+            if include_details is False:
+                tree[node['path']] = node_children
+            else:
+                tree[node['path']] = dict(node_children,
+                                          count=node['text']['count'],
+                                          uid=node['uid'],
+                                          id=node['id'],
+                                          path=node['path'],
+                                          uuid=node['uuid']
+                                          )
+        if _root_path is True:
+            tree = {tree_data['path']: tree}
+        return tree
+
+    def get_info_by_uid(self, uid):
         """
         Get object properties by the full UID
 
@@ -97,7 +259,7 @@ class DeviceRouter(ZenossRouter):
             )
         )
 
-    def _get_device_by_uid(self, device_uid):
+    def get_device_by_uid(self, device_uid):
         """
         Get a device by its full UID
 
@@ -107,7 +269,7 @@ class DeviceRouter(ZenossRouter):
         Returns:
             ZenossDevice:
         """
-        device_data = self._get_info_by_uid(device_uid)
+        device_data = self.get_info_by_uid(device_uid)
 
         return ZenossDevice(
             self.api_url,
@@ -116,7 +278,102 @@ class DeviceRouter(ZenossRouter):
             device_data['data']
         )
 
-    def _move_devices_by_uid(self, devices, device_class):
+    def get_device_by_name(self, device_name):
+        """
+        Get a device by its name
+
+        Arguments:
+            device_name (str): Name of the device to get
+
+        Returns:
+            ZenossDevice:
+        """
+        device_uid = self.get_device_uid_by_name(device_name)
+        if device_uid is None:
+            return None
+        return self.get_device_by_uid(device_uid)
+
+    def list_devices_by_uid(self, uid, keys=None, **kwargs):
+        """
+        Returns a list of all devices under a specified UID.
+        UID could be a device class, group, system, location, etc.
+        Args:
+            uid: (str) Device organizer to list devices under
+            keys: (list) List of keys to return in results, otherwise returns all
+            **kwargs:  Additional optional arguments (sort, start, limit, params, page, dir)
+
+        Returns: (list)  List of all devices in the group organizer and its properties
+
+        """
+        if not keys:
+            keys = [
+                'name',
+                'uid',
+                'ipAddressString',
+                'collector',
+                'productionState',
+                'priority',
+                'location',
+                'groups',
+                'events'
+            ]
+
+        device_data = self._router_request(
+            self._make_request_data(
+                'getDevices',
+                dict(
+                    uid=uid,
+                    **kwargs
+                )
+            )
+        )
+
+        device_list = dict(
+            total=device_data['totalCount'],
+            hash=device_data['hash'],
+            devices=[],
+        )
+        for device in device_data['devices']:
+            devinfo = dict()
+            for key in keys:
+                if key == "uid":
+                    devinfo['uid'] = device['uid'].replace('/zport/dmd/', '', 1)
+                elif key == "location":
+                    if device['location']:
+                        devinfo['location'] = device['location']['name']
+                    else:
+                        devinfo['location'] = None
+                else:
+                    devinfo[key] = device[key]
+            device_list['devices'].append(devinfo)
+
+        return device_list
+
+    def get_device_uid_by_name(self, device_name):
+        """
+        Get the UID for a device by its name
+
+        Arguments:
+            device_name (str): Name of the device to get the UID for
+
+        Returns:
+            str: UID for the device
+        """
+        device_data = self._router_request(
+            self._make_request_data(
+                'getDevices',
+                dict(
+                    params={'name': device_name},
+                    keys=['uid']
+                )
+            )
+        )
+
+        if len(device_data['devices']) == 0:
+            return None
+        return device_data['devices'][0]['uid']
+
+    def move_devices_by_uid(self, devices, device_class):
         """
         Move the devices in the list to a new device class.
 
@@ -155,8 +412,8 @@ class DeviceRouter(ZenossRouter):
 
         return move_jobs
 
-    def _add_device_class(self, new_class, parent,
-                          description='', connection_info=None):
+    def add_device_class(self, new_class, parent,
+                         description='', connection_info=None):
         """
         Add a new device class under a parent path
 
@@ -184,7 +441,7 @@ class DeviceRouter(ZenossRouter):
             )
         )
 
-        dc_data = self._get_info_by_uid(response_data['nodeConfig']['path'])
+        dc_data = self.get_info_by_uid(response_data['nodeConfig']['path'])
         return ZenossDeviceClass(
             self.api_url,
             self.api_headers,
@@ -192,8 +449,8 @@ class DeviceRouter(ZenossRouter):
             dc_data['data']
         )
 
-    def _lock_devices_by_uid(self, devices, updates=False, deletion=False,
-                             send_event=False):
+    def lock_devices_by_uid(self, devices, updates=False, deletion=False,
+                            send_event=False):
         """
         Lock devices from changes.
 
@@ -221,7 +478,7 @@ class DeviceRouter(ZenossRouter):
 
         return response_data['msg']
 
-    def _reset_device_ip_addresses_by_uid(self, devices, ip_address=''):
+    def reset_device_ip_addresses_by_uid(self, devices, ip_address=''):
         """
         Reset IP addresses of devices, either by DNS lookup or manually
         specified address
@@ -243,7 +500,7 @@ class DeviceRouter(ZenossRouter):
 
         return response_data['msg']
 
-    def _set_production_state_by_uids(self, devices, production_state):
+    def set_production_state_by_uids(self, devices, production_state):
         """
         Sets the production state of a list of devices.
 
@@ -272,7 +529,7 @@ class DeviceRouter(ZenossRouter):
 
         return response_data['msg']
 
-    def _set_priority_by_uids(self, devices, priority):
+    def set_priority_by_uids(self, devices, priority):
         """
         Sets the priority of a list of devices
 
@@ -303,7 +560,7 @@ class DeviceRouter(ZenossRouter):
 
         return response_data['msg']
 
-    def _set_collector_by_uids(self, devices, collector):
+    def set_collector_by_uids(self, devices, collector):
         """
         Sets the collector for a list of devices.
 
@@ -336,18 +593,21 @@ class DeviceRouter(ZenossRouter):
             description=collector_job_data['new_jobs']['description']
         )
 
-    def _delete_devices_by_uid(self, devices, action, del_events=False,
-                               del_perf=False):
+    def delete_devices_by_uid(self, devices, action, del_events=False,
+                              del_perf=False, **kwargs):
         """
         Remove a list of devices from their organizer UID, or delete them
         from Zenoss altogether.
 
         Arguments:
             devices (list): Uids of devices to remove/delete
-            action (str): 'remove' to remove the devices from their organizer,
+            action (str): 'remove' to remove the devices from their organizer(see 'uid' below),
                 'delete' to delete them from Zenoss
             del_events (bool): Remove all events for the devices
             del_perf (bool): Remove all perf data for the devices
+
+        Optional Arguments:
+        uid (str): If using the 'remove' action this option must be included and should be the uid of the organizer you wish to remove the device from. ie "/zport/dmd/Groups/SOMEGROUP"
 
         Returns:
             dict:
@@ -364,10 +624,12 @@ class DeviceRouter(ZenossRouter):
                     uids=devices,
                     hashcheck='',
                     action=action,
-                    del_events=del_events,
-                    del_perf=del_perf,
+                    deleteEvents=del_events,
+                    deletePerf=del_perf,
+                    **kwargs
                 )
-            )
+            ),
+            response_timeout=30
         )
 
         return response_data
@@ -375,6 +637,9 @@ class DeviceRouter(ZenossRouter):
     def _set_components_monitored_by_uids(self, components, monitor=True):
         """
         Sets the monitored state for a list of components.
+
+        Leaving component methods private for now as manipulating components by uid directly is
+        cumbersome and likely better achieved using the object methods that reference them.
 
         Arguments:
             components (list): Uids of the components to update
@@ -447,12 +712,21 @@ class DeviceRouter(ZenossRouter):
 
         return response_data['msg']
 
-    def get_tree(self, device_class):
+    def get_tree(self, device_class, climb_tree=False, include_details=False):
         """
         Get the tree structure of a device class.
 
         Arguments:
             device_class (str): Device class to use as the top of the tree
+            climb_tree (bool): If true will return a different dictionary structure
+                where each branch is a dictionary and contains helpful metadata as
+                well as dictionaries for any branches of the tree.  This version
+                ONLY uses dicts.  Leaving this to 'False' will return a dictionary
+                with a structure similar to that found in the standard getTree API call.
+            include_details (bool): If the climb_tree option is used then the
+                include_details option may also be specified.  If True, the function
+                returns all data provided by the getTree API method. If False, the
+                function returns only the tree structure as a dict of dicts.
 
         Returns:
             dict:
@@ -464,7 +738,10 @@ class DeviceRouter(ZenossRouter):
             )
         )
 
-        return self._find_nodes_in_tree(tree_data[0])
+        if climb_tree is True:
+            return self._climb_tree(tree_data[0], include_details)
+        else:
+            return self._find_nodes_in_tree(tree_data[0])
 
     def list_collectors(self):
         """
@@ -578,7 +855,7 @@ class DeviceRouter(ZenossRouter):
             else:
                 device_class = 'Devices/{0}'.format(device_class)
 
-        dc_data = self._get_info_by_uid(device_class)
+        dc_data = self.get_info_by_uid(device_class)
 
         return ZenossDeviceClass(
             self.api_url,
@@ -713,7 +990,7 @@ class ZenossDeviceClass(DeviceRouter):
             devices=[]
         )
         for device in device_data['devices']:
-            device_list['devices'].append(self._get_device_by_uid(
+            device_list['devices'].append(self.get_device_by_uid(
                 device['uid'].replace('/zport/dmd/', '', 1)))
 
         return device_list
@@ -729,7 +1006,7 @@ class ZenossDeviceClass(DeviceRouter):
             ZenossDevice:
         """
         device_uid = '{0}/devices/{1}'.format(self.uid, device_name)
-        return self._get_device_by_uid(device_uid)
+        return self.get_device_by_uid(device_uid)
 
     def add_subclass(self, name, description='', connection_info=None):
         """
@@ -741,8 +1018,8 @@ class ZenossDeviceClass(DeviceRouter):
             connection_info (list): zProperties that represent the credentials
                 for access in the subclass
         """
-        return self._add_device_class(name, self.uid, description,
-                                      connection_info)
+        return self.add_device_class(name, self.uid, description,
+                                     connection_info)
 
     def add_device(self, device_name, title='', ip_address='', location=None,
                    systems=None, groups=None, model=False,
@@ -1115,7 +1392,7 @@ class ZenossDevice(DeviceRouter):
 
         components = []
         for component in components_list['components']:
-            c_info = self._get_info_by_uid(
+            c_info = self.get_info_by_uid(
                 '{0}/{1}'.format(self.uid, component))
             components.append(
                 ZenossComponent(
@@ -1138,7 +1415,7 @@ class ZenossDevice(DeviceRouter):
         Returns:
             ZenossComponent:
         """
-        c_info = self._get_info_by_uid('{0}/{1}'.format(self.uid, component))
+        c_info = self.get_info_by_uid('{0}/{1}'.format(self.uid, component))
 
         return ZenossComponent(
             self.api_url,
@@ -1546,7 +1823,7 @@ class ZenossDevice(DeviceRouter):
         Returns:
             str: uuid of the Job Manager job for the move
         """
-        job_data = self._move_devices_by_uid([self.uid], device_class)
+        job_data = self.move_devices_by_uid([self.uid], device_class)
         return job_data[0]['uuid']
 
     def reidentify(self, new_id):
@@ -1585,9 +1862,9 @@ class ZenossDevice(DeviceRouter):
         Returns:
             str: Response message
         """
-        return self._lock_devices_by_uid([self.uid], updates=updates,
-                                         deletion=deletion,
-                                         send_event=send_event)
+        return self.lock_devices_by_uid([self.uid], updates=updates,
+                                        deletion=deletion,
+                                        send_event=send_event)
 
     def lock_for_updates(self, send_event=False):
         """
@@ -1624,8 +1901,8 @@ class ZenossDevice(DeviceRouter):
         Returns:
             str: Response message
         """
-        return self._reset_device_ip_addresses_by_uid([self.uid],
-                                                      ip_address=ip_address)
+        return self.reset_device_ip_addresses_by_uid([self.uid],
+                                                     ip_address=ip_address)
 
     def set_production_state(self, production_state):
         """
@@ -1638,8 +1915,8 @@ class ZenossDevice(DeviceRouter):
         Returns:
             str: Response message
         """
-        message = self._set_production_state_by_uids([self.uid],
-                                                     production_state)
+        message = self.set_production_state_by_uids([self.uid],
+                                                    production_state)
         self.productionState = production_state
         return message
 
@@ -1653,7 +1930,7 @@ class ZenossDevice(DeviceRouter):
         Returns:
             str: Reponse message
         """
-        message = self._set_priority_by_uids([self.uid], priority)
+        message = self.set_priority_by_uids([self.uid], priority)
         self.priority = priority
         return message
 
@@ -1667,23 +1944,28 @@ class ZenossDevice(DeviceRouter):
         Returns:
             str: uuid of the Job Manager job for the change
         """
-        job_data = self._set_collector_by_uids([self.uid], collector)
+        job_data = self.set_collector_by_uids([self.uid], collector)
         return job_data['uuid']
 
-    def delete(self, action, del_events=False, del_perf=True):
+    def delete(self, action, del_events=False, del_perf=True, **kwargs):
         """
         Remove a device from its organizer, or delete it from Zenoss altogether.
 
         Arguments:
-            action (str): 'remove' to remove the devices from their organizer,
+            action (str): 'remove' to remove the devices from their organizer(see 'uid' below),
                 'delete' to delete them from Zenoss
             del_events (bool): Remove all events for the devices
             del_perf (bool): Remove all perf data for the devices
 
+        Optional Arguments:
+            uid (str): If using the 'remove' action this option must
+            be included and should be the uid of the organizer you
+            wish to remove the device from. ie "/zport/dmd/Groups/SOMEGROUP"
+
         Returns:
             bool:
         """
-        self._delete_devices_by_uid([self.uid], action, del_events, del_perf)
+        self.delete_devices_by_uid([self.uid], action, del_events, del_perf, **kwargs)
 
         return True
 

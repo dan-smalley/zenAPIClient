@@ -3,6 +3,7 @@
 """
 Zenoss evconsole_router
 """
+import logging
 
 from zenossapi.apiclient import ZenossAPIClientError
 from zenossapi.routers import ZenossRouter
@@ -45,9 +46,9 @@ class EventsRouter(ZenossRouter):
             type(self).__name__, identifier
         )
 
-    def _query_events(self, limit=10, start=0, sort='lastTime', sort_dir='DESC',
-                      params=None, exclude=None, keys=None, context=None,
-                      archive=False, validate_params=True, detail_format=False):
+    def query_events(self, limit=10, start=0, sort='lastTime', sort_dir='DESC',
+                     params=None, exclude=None, keys=None, context=None,
+                     archive=False, validate_params=True, detail_format=False):
         """
         Get a list of events based on query parameters.
 
@@ -145,7 +146,7 @@ class EventsRouter(ZenossRouter):
             events=events_data['events'],
         )
 
-    def _get_details_by_evid(self, evid):
+    def get_details_by_evid(self, evid):
         """
         Get the details of an event by the event ID.
 
@@ -166,8 +167,8 @@ class EventsRouter(ZenossRouter):
 
         return event_data['event'][0]
 
-    def _event_actions(self, action, evids=None, exclude_ids=None, params=None,
-                       context=None, last_change=None, limit=None, timeout=60):
+    def event_actions(self, action, evids=None, exclude_ids=None, params=None,
+                      context=None, last_change=None, limit=None, timeout=60):
         """
         Close events by either passing a list of event ids or by a query.
 
@@ -246,7 +247,7 @@ class EventsRouter(ZenossRouter):
         Returns:
             ZenossEvent:
         """
-        event_data = self._get_details_by_evid(evid)
+        event_data = self.get_details_by_evid(evid)
 
         return ZenossEvent(
             self.api_url,
@@ -268,7 +269,7 @@ class EventsRouter(ZenossRouter):
         Returns:
             dict:
         """
-        return self._query_events(
+        return self.query_events(
             limit=limit,
             start=start,
             sort=sort,
@@ -289,7 +290,7 @@ class EventsRouter(ZenossRouter):
         Returns:
             list(ZenossEvent):
         """
-        events_data = self._query_events(
+        events_data = self.query_events(
             limit=limit,
             start=start,
             sort=sort,
@@ -300,7 +301,7 @@ class EventsRouter(ZenossRouter):
 
         events = []
         for e in events_data['events']:
-            evdetails = self._get_details_by_evid(e['evid'])
+            evdetails = self.get_details_by_evid(e['evid'])
             events.append(
                 ZenossEvent(
                     self.api_url,
@@ -327,7 +328,7 @@ class EventsRouter(ZenossRouter):
         Returns:
             dict:
         """
-        return self._query_events(
+        return self.query_events(
             limit=limit,
             start=start,
             sort=sort,
@@ -350,7 +351,7 @@ class EventsRouter(ZenossRouter):
         Returns:
             list(ZenossEvent):
         """
-        events_data = self._query_events(
+        events_data = self.query_events(
             limit=limit,
             start=start,
             sort=sort,
@@ -361,7 +362,7 @@ class EventsRouter(ZenossRouter):
 
         events = []
         for e in events_data['events']:
-            evdetails = self._get_details_by_evid(e['evid'])
+            evdetails = self.get_details_by_evid(e['evid'])
             events.append(
                 ZenossEvent(
                     self.api_url,
@@ -374,7 +375,7 @@ class EventsRouter(ZenossRouter):
         return events
 
     def add_event(self, summary, device, severity, component=None,
-                  event_class_key='', event_class='/Status', **kwargs):
+                  event_class_key='', event_class='/Status', return_event=True, **kwargs):
         """
         Create a new Zenoss event.
 
@@ -386,6 +387,7 @@ class EventsRouter(ZenossRouter):
                 Critical, Error, Warning, Info, Debug, or Clear
             event_class_key (str): The Event Class Key to assign to the event
             event_class (str): Event Class for the event
+            return_event (bool): By default the function will return the event details but this can be expensive and usually not needed.  Pass in False to disable this behavior
 
         Returns:
             ZenossEvent:
@@ -412,6 +414,9 @@ class EventsRouter(ZenossRouter):
             )
         )
 
+        if return_event is False:
+            return None
+
         ev_filter = dict(
             summary=summary,
             device=[device],
@@ -421,14 +426,23 @@ class EventsRouter(ZenossRouter):
             **kwargs
         )
 
-        event_data = self._query_events(
+        # TODO: Add a single retry with a half second or so sleep if no event is returned.
+        #  This would help give zenoss time to process the event the first time it's seen.
+        #  Once the event is in zenoss and the counter is simply iterating this would be unnecessary.
+        event_data = self.query_events(
             limit=1,
             params=ev_filter,
             keys=['evid']
         )
-        evid = event_data['events'][0]['evid']
+        if len(event_data['events']) > 0:
 
-        return self.get_event_by_evid(evid)
+            evid = event_data['events'][0]['evid']
+
+            return self.get_event_by_evid(evid)
+
+        else:
+            logging.debug('No event returned')
+            return None
 
     def clear_heartbeats(self):
         """
@@ -537,7 +551,7 @@ class ZenossEvent(EventsRouter):
             )
         )
 
-        event_detail = self._get_details_by_evid(self.evid)
+        event_detail = self.get_details_by_evid(self.evid)
         self.log = event_detail['log']
 
         return True
@@ -546,16 +560,16 @@ class ZenossEvent(EventsRouter):
         """
         Close the event.
         """
-        return self._event_actions('close', [self.evid])
+        return self.event_actions('close', [self.evid])
 
     def ack(self):
         """
         Acknowledge the event.
         """
-        return self._event_actions('acknowledge', [self.evid])
+        return self.event_actions('acknowledge', [self.evid])
 
     def reopen(self):
         """
         Reopen (unacknowledge or unclose) the event.
         """
-        return self._event_actions('reopen', [self.evid])
+        return self.event_actions('reopen', [self.evid])
