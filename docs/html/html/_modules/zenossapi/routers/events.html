@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>zenossapi.routers.events &mdash; zenAPIClient  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            zenAPIClient
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../zenossapi.html">zenossapi</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../zenossapi.routers.html">zenossapi Routers</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">zenAPIClient</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../routers.html">zenossapi.routers</a></li>
+      <li class="breadcrumb-item active">zenossapi.routers.events</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for zenossapi.routers.events</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Zenoss evconsole_router</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">zenossapi.apiclient</span> <span class="kn">import</span> <span class="n">ZenossAPIClientError</span>
+<span class="kn">from</span> <span class="nn">zenossapi.routers</span> <span class="kn">import</span> <span class="n">ZenossRouter</span>
+
+
+<div class="viewcode-block" id="EventsRouter">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.EventsRouter">[docs]</a>
+<span class="k">class</span> <span class="nc">EventsRouter</span><span class="p">(</span><span class="n">ZenossRouter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for interacting with Zenoss events.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">EventsRouter</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">,</span>
+                                           <span class="s1">&#39;evconsole_router&#39;</span><span class="p">,</span> <span class="s1">&#39;EventsRouter&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">evid</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_states_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">New</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">Acknowledged</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">Suppressed</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">Closed</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">Cleared</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">Aged</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_severity_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">Critical</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">Error</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="ne">Warning</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">Info</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+            <span class="n">Debug</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">Clear</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">evid</span><span class="p">:</span>
+            <span class="n">identifier</span> <span class="o">=</span> <span class="s2">&quot;id </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evid</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">identifier</span> <span class="o">=</span> <span class="s2">&quot;at </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="s1">&#39;&lt;</span><span class="si">{0}</span><span class="s1"> object </span><span class="si">{1}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">identifier</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="EventsRouter.query_events">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.EventsRouter.query_events">[docs]</a>
+    <span class="k">def</span> <span class="nf">query_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;lastTime&#39;</span><span class="p">,</span> <span class="n">sort_dir</span><span class="o">=</span><span class="s1">&#39;DESC&#39;</span><span class="p">,</span>
+                     <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">archive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">validate_params</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">detail_format</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a list of events based on query parameters.</span>
+
+<span class="sd">        Some search parameter examples:</span>
+
+<span class="sd">        Find New events:</span>
+<span class="sd">            params=dict(eventState=[0])</span>
+<span class="sd">        Find open events (in New or Acknowledged state):</span>
+<span class="sd">            params=dict(eventState=[0,1])</span>
+<span class="sd">        Find open events for Production servers:</span>
+<span class="sd">            params=dict(eventState=[0,1], prodState=[1000])</span>
+
+<span class="sd">        Other handy search keys: agent, count, DevicePriority, firstTime,</span>
+<span class="sd">        lastTime, monitor, message, severity, summary</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            limit (int): Maximum number of events to get</span>
+<span class="sd">            start (int): Minimum index of events to get</span>
+<span class="sd">            sort (str): Sort key for events list</span>
+<span class="sd">            sort_dir (str): Sort direction, ASC or DESC</span>
+<span class="sd">            params (dict): Key/value pairs for filtering the events to include</span>
+<span class="sd">            exclude (dict): Key/value pairs to filter out of the found events</span>
+<span class="sd">            keys (list): List of keys to include in the return event data</span>
+<span class="sd">            context (str): Device or device class uid as context for the query</span>
+<span class="sd">            archive (bool): Search the events archive instead of active events</span>
+<span class="sd">            validate_params (bool): Check input params against known param list</span>
+<span class="sd">            detail_format (bool): Request detail format of return parameters</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict(int, float, list(dict)): ::</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &#39;total&#39;: Total count of events matched by the query,</span>
+<span class="sd">                &#39;ts&#39;: Timestamp for the search,</span>
+<span class="sd">                &#39;events&#39;: List of events found,</span>
+<span class="sd">            }</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">valid_params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;agent&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;component&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;count&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;dedupid&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;device&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;deviceClass&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;deviceGroups&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;devicePriority&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;eventClass&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;eventGroup&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;eventKey&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;eventState&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;evid&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;facility&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;firstTime&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;ipAddress&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;lastTime&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;location&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;manager&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;message&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;ntevid&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;ownerId&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;priority&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;prodState&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;severity&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;stateChange&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;summary&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;systems&#39;</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">and</span> <span class="n">validate_params</span><span class="p">:</span>
+            <span class="n">param_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+            <span class="n">bad_params</span> <span class="o">=</span> <span class="n">param_keys</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">valid_params</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">bad</span> <span class="ow">in</span> <span class="n">bad_params</span><span class="p">:</span>
+                <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">bad</span><span class="p">)</span>
+
+        <span class="n">events_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;query&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+                    <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+                    <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">,</span>
+                    <span class="nb">dir</span><span class="o">=</span><span class="n">sort_dir</span><span class="p">,</span>
+                    <span class="n">detailFormat</span><span class="o">=</span><span class="n">detail_format</span><span class="p">,</span>
+                    <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                    <span class="n">exclusion_filter</span><span class="o">=</span><span class="n">exclude</span><span class="p">,</span>
+                    <span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="p">,</span>
+                    <span class="n">uid</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
+                    <span class="n">archive</span><span class="o">=</span><span class="n">archive</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">ts</span><span class="o">=</span><span class="n">events_data</span><span class="p">[</span><span class="s1">&#39;asof&#39;</span><span class="p">],</span>
+            <span class="n">total</span><span class="o">=</span><span class="n">events_data</span><span class="p">[</span><span class="s1">&#39;totalCount&#39;</span><span class="p">],</span>
+            <span class="n">events</span><span class="o">=</span><span class="n">events_data</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">],</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="EventsRouter.get_details_by_evid">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.EventsRouter.get_details_by_evid">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_details_by_evid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the details of an event by the event ID.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            evid (str): The event ID</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: Event details</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">event_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;detail&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">evid</span><span class="o">=</span><span class="n">evid</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;event&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="EventsRouter.event_actions">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.EventsRouter.event_actions">[docs]</a>
+    <span class="k">def</span> <span class="nf">event_actions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">,</span> <span class="n">evids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">exclude_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">last_change</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">60</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close events by either passing a list of event ids or by a query.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            action (str): The action to take on the event - close,</span>
+<span class="sd">                ack, or reopen</span>
+<span class="sd">            evids (list): List of event IDs to close</span>
+<span class="sd">            exclude_ids (list): List of event IDs to exclude from the close</span>
+<span class="sd">            params (dict): Key/value pairs for filtering the events to close</span>
+<span class="sd">            context (str): Device or device class uid as context for the query</span>
+<span class="sd">            last_change (float): Timestamp - only close events if there has</span>
+<span class="sd">                been no change since this time</span>
+<span class="sd">            limit (int): Maximum number of events to return in the query</span>
+<span class="sd">            timeout (int): Number of seconds before the query times out</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">action</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="s1">&#39;acknowledge&#39;</span><span class="p">,</span> <span class="s1">&#39;reopen&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">ZenossAPIClientError</span><span class="p">(</span><span class="s2">&quot;Unknown event action: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">action</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="n">action</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">evids</span><span class="o">=</span><span class="n">evids</span><span class="p">,</span>
+                    <span class="n">excludeIds</span><span class="o">=</span><span class="n">exclude_ids</span><span class="p">,</span>
+                    <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+                    <span class="n">uid</span><span class="o">=</span><span class="n">context</span><span class="p">,</span>
+                    <span class="n">asof</span><span class="o">=</span><span class="n">last_change</span><span class="p">,</span>
+                    <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+                    <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="EventsRouter.get_config">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.EventsRouter.get_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the event handling configuration.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(dict):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">config_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;getConfig&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">config_data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="EventsRouter.update_config">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.EventsRouter.update_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_values</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the Zenoss event handling configuration.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            config_values (dict): Key/value pairs of the config</span>
+<span class="sd">                values to change.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;setConfigValues&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="n">config_values</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="EventsRouter.get_event_by_evid">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.EventsRouter.get_event_by_evid">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_event_by_evid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get an event by its event id</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            evid (str): The event id</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossEvent:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">event_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_details_by_evid</span><span class="p">(</span><span class="n">evid</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ZenossEvent</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api_headers</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">,</span>
+            <span class="n">event_data</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="EventsRouter.list_open_events">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.EventsRouter.list_open_events">[docs]</a>
+    <span class="k">def</span> <span class="nf">list_open_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;lastTime&#39;</span><span class="p">,</span> <span class="n">sort_dir</span><span class="o">=</span><span class="s1">&#39;DESC&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a list of all open events (new or acknowledged state)</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            limit (int): Maximum number of events to return</span>
+<span class="sd">            start (int): Minimum index of events to get</span>
+<span class="sd">            sort (str): Sort key for events list</span>
+<span class="sd">            sort_dir (str): Sort direction, ASC or DESC</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_events</span><span class="p">(</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+            <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">,</span>
+            <span class="n">sort_dir</span><span class="o">=</span><span class="n">sort_dir</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">eventState</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">severity</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="EventsRouter.get_open_events">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.EventsRouter.get_open_events">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_open_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;lastTime&#39;</span><span class="p">,</span> <span class="n">sort_dir</span><span class="o">=</span><span class="s1">&#39;DESC&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all open events (new or acknowledged state)</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            limit (int): Maximum number of events to return</span>
+<span class="sd">            start (int): Minimum index of events to get</span>
+<span class="sd">            sort (str): Sort key for events list</span>
+<span class="sd">            sort_dir (str): Sort direction, ASC or DESC</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(ZenossEvent):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">events_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_events</span><span class="p">(</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+            <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">,</span>
+            <span class="n">sort_dir</span><span class="o">=</span><span class="n">sort_dir</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">eventState</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">severity</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span>
+            <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;evid&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">events</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">events_data</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">]:</span>
+            <span class="n">evdetails</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_details_by_evid</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="s1">&#39;evid&#39;</span><span class="p">])</span>
+            <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">ZenossEvent</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">api_headers</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">,</span>
+                    <span class="n">evdetails</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">events</span></div>
+
+
+<div class="viewcode-block" id="EventsRouter.list_open_production_events">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.EventsRouter.list_open_production_events">[docs]</a>
+    <span class="k">def</span> <span class="nf">list_open_production_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;lastTime&#39;</span><span class="p">,</span>
+                                    <span class="n">sort_dir</span><span class="o">=</span><span class="s1">&#39;DESC&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a list of all open events (new or acknowledged state) for devices</span>
+<span class="sd">        with a production state of Production</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            limit (int): Maximum number of events to return</span>
+<span class="sd">            start (int): Minimum index of events to get</span>
+<span class="sd">            sort (str): Sort key for events list</span>
+<span class="sd">            sort_dir (str): Sort direction, ASC or DESC</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_events</span><span class="p">(</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+            <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">,</span>
+            <span class="n">sort_dir</span><span class="o">=</span><span class="n">sort_dir</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">eventState</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">prodState</span><span class="o">=</span><span class="p">[</span><span class="mi">1000</span><span class="p">],</span> <span class="n">severity</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="EventsRouter.get_open_production_events">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.EventsRouter.get_open_production_events">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_open_production_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="s1">&#39;lastTime&#39;</span><span class="p">,</span>
+                                   <span class="n">sort_dir</span><span class="o">=</span><span class="s1">&#39;DESC&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get all open events (new or acknowledged state) for devices with a</span>
+<span class="sd">        production state of Production</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            limit (int): Maximum number of events to return</span>
+<span class="sd">            start (int): Minimum index of events to get</span>
+<span class="sd">            sort (str): Sort key for events list</span>
+<span class="sd">            sort_dir (str): Sort direction, ASC or DESC</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list(ZenossEvent):</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">events_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_events</span><span class="p">(</span>
+            <span class="n">limit</span><span class="o">=</span><span class="n">limit</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+            <span class="n">sort</span><span class="o">=</span><span class="n">sort</span><span class="p">,</span>
+            <span class="n">sort_dir</span><span class="o">=</span><span class="n">sort_dir</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">eventState</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">prodState</span><span class="o">=</span><span class="p">[</span><span class="mi">1000</span><span class="p">],</span> <span class="n">severity</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span>
+            <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;evid&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="n">events</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">events_data</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">]:</span>
+            <span class="n">evdetails</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_details_by_evid</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="s1">&#39;evid&#39;</span><span class="p">])</span>
+            <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">ZenossEvent</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">api_url</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">api_headers</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">ssl_verify</span><span class="p">,</span>
+                    <span class="n">evdetails</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">events</span></div>
+
+
+<div class="viewcode-block" id="EventsRouter.add_event">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.EventsRouter.add_event">[docs]</a>
+    <span class="k">def</span> <span class="nf">add_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">summary</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">severity</span><span class="p">,</span> <span class="n">component</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">event_class_key</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">event_class</span><span class="o">=</span><span class="s1">&#39;/Status&#39;</span><span class="p">,</span> <span class="n">return_event</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new Zenoss event.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            summary (str): Summary for the new event</span>
+<span class="sd">            device (str): Device ID for the new event</span>
+<span class="sd">            component (str): Component UID for the new event</span>
+<span class="sd">            severity (str): Severity to assign the new event, must be one of</span>
+<span class="sd">                Critical, Error, Warning, Info, Debug, or Clear</span>
+<span class="sd">            event_class_key (str): The Event Class Key to assign to the event</span>
+<span class="sd">            event_class (str): Event Class for the event</span>
+<span class="sd">            return_event (bool): By default the function will return the event details but this can be expensive and usually not needed.  Pass in False to disable this behavior</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            ZenossEvent:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">severity</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_severity_map</span><span class="p">:</span>
+            <span class="n">severity_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_severity_map</span><span class="p">[</span><span class="n">severity</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">severity_num</span> <span class="o">=</span> <span class="n">severity</span>
+
+        <span class="n">event_spec</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">summary</span><span class="o">=</span><span class="n">summary</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+            <span class="n">component</span><span class="o">=</span><span class="n">component</span><span class="p">,</span>
+            <span class="n">severity</span><span class="o">=</span><span class="n">severity</span><span class="p">,</span>
+            <span class="n">evclasskey</span><span class="o">=</span><span class="n">event_class_key</span><span class="p">,</span>
+            <span class="n">evclass</span><span class="o">=</span><span class="n">event_class</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;add_event&#39;</span><span class="p">,</span>
+                <span class="n">event_spec</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">return_event</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">ev_filter</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">summary</span><span class="o">=</span><span class="n">summary</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="p">[</span><span class="n">device</span><span class="p">],</span>
+            <span class="n">component</span><span class="o">=</span><span class="p">[</span><span class="n">component</span><span class="p">]</span> <span class="k">if</span> <span class="n">component</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">severity</span><span class="o">=</span><span class="n">severity_num</span><span class="p">,</span>
+            <span class="n">eventClassKey</span><span class="o">=</span><span class="n">event_class_key</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)</span>
+
+        <span class="c1"># TODO: Add a single retry with a half second or so sleep if no event is returned.</span>
+        <span class="c1">#  This would help give zenoss time to process the event the first time it&#39;s seen.</span>
+        <span class="c1">#  Once the event is in zenoss and the counter is simply iterating this would be unnecessary.</span>
+        <span class="n">event_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_events</span><span class="p">(</span>
+            <span class="n">limit</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">ev_filter</span><span class="p">,</span>
+            <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;evid&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="n">evid</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;evid&#39;</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_event_by_evid</span><span class="p">(</span><span class="n">evid</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;No event returned&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="EventsRouter.clear_heartbeats">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.EventsRouter.clear_heartbeats">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear_heartbeats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear all heartbeat events</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True on success</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;clear_heartbeats&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="EventsRouter.clear_heartbeat">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.EventsRouter.clear_heartbeat">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear_heartbeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collector</span><span class="p">,</span> <span class="n">daemon</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear a heartbeat event for a specific daemon.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            collector (str): Collector the daemon is running in,</span>
+<span class="sd">                e.g. slvcollector</span>
+<span class="sd">            daemon (str): Monitoring daemon to clear the heartbeat event</span>
+<span class="sd">                for, e.g. zencommand</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;clear_heartbeat&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">monitor</span><span class="o">=</span><span class="n">collector</span><span class="p">,</span>
+                    <span class="n">daemon</span><span class="o">=</span><span class="n">daemon</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ZenossEvent">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.ZenossEvent">[docs]</a>
+<span class="k">class</span> <span class="nc">ZenossEvent</span><span class="p">(</span><span class="n">EventsRouter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class for Zenoss event objects</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">,</span> <span class="n">event_data</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ZenossEvent</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="p">,</span> <span class="n">ssl_verify</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">evid</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;evid&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_class</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;DeviceClass&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_groups</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;DeviceGroups&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_priority</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;DevicePriority&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">location</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;Location&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">systems</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;Systems&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">agent</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;agent&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clearid</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;clearid&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">component</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;component&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">component_title</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;component_title&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">component_url</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;component_url&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">component_uuid</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;component_uuid&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dedupid</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;dedupid&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">details</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;details&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;device&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_title</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;device_title&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_url</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;device_url&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device_uuid</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;device_uuid&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_class</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;eventClass&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_class_key</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;eventClassKey&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_class_mapping</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;eventClassMapping&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_class_mapping_url</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;eventClassMapping_url&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_class_url</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;eventClass_url&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_group</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;eventGroup&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_key</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;eventKey&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_state</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;eventState&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">facility</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;facility&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">first_time</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;firstTime&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip_address</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;ipAddress&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_time</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;lastTime&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;log&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collector</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;monitor&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ntevid</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;ntevid&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ownerid</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;ownerid&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">priority</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;priority&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">production_state</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;prodState&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">severity</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;severity&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state_change</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;stateChange&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">summary</span> <span class="o">=</span> <span class="n">event_data</span><span class="p">[</span><span class="s1">&#39;summary&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="ZenossEvent.update_log">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.ZenossEvent.update_log">[docs]</a>
+    <span class="k">def</span> <span class="nf">update_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add an entry to the event&#39;s log</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            message (str): Log entry to add</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_router_request</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_make_request_data</span><span class="p">(</span>
+                <span class="s1">&#39;write_log&#39;</span><span class="p">,</span>
+                <span class="nb">dict</span><span class="p">(</span>
+                    <span class="n">evid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">evid</span><span class="p">,</span>
+                    <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">event_detail</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_details_by_evid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">evid</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">event_detail</span><span class="p">[</span><span class="s1">&#39;log&#39;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<div class="viewcode-block" id="ZenossEvent.close">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.ZenossEvent.close">[docs]</a>
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Close the event.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_actions</span><span class="p">(</span><span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">evid</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="ZenossEvent.ack">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.ZenossEvent.ack">[docs]</a>
+    <span class="k">def</span> <span class="nf">ack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Acknowledge the event.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_actions</span><span class="p">(</span><span class="s1">&#39;acknowledge&#39;</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">evid</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="ZenossEvent.reopen">
+<a class="viewcode-back" href="../../../zenossapi.routers.html#zenossapi.routers.events.ZenossEvent.reopen">[docs]</a>
+    <span class="k">def</span> <span class="nf">reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reopen (unacknowledge or unclose) the event.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_actions</span><span class="p">(</span><span class="s1">&#39;reopen&#39;</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">evid</span><span class="p">])</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Dan Smalley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
