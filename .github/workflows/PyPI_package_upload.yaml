@@ -10,14 +10,20 @@
 name: PyPI Package Upload
 
 on:
-  release:
-    types: [published]
+  workflow_call:
+    inputs:
+      workflow-environment:
+        required: true
+        type: string
+      pypi-url:
+        required: true
+        type: string
 
 jobs:
-  testpypi_upload:
+  pypi_upload:
     runs-on: ubuntu-latest
     environment:
-      name: Dev
+      name: ${{ inputs.workflow-environment }}
     permissions:
       id-token: write
     steps:
@@ -35,4 +41,4 @@ jobs:
       - name: Publish package
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          repository-url: https://test.pypi.org/legacy/
+          repository-url: ${{ inputs.pypi-url }}
