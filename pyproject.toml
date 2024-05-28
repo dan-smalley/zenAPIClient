@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools", "versioneer[toml]"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zenAPIClient"
+dynamic = ["version"]
+authors = [
+  {name = "Dan Smalley", email="zenapiclient@smalley.link"}
+]
+description = "Zenoss API client module"
+readme = "README.md"
+license = {file = "LICENSE.md"}
+keywords = ["zenoss", "monitoring", "api"]
+classifiers=[
+          "Intended Audience :: System Administrators",
+          "License :: OSI Approved :: Apache Software License",
+          "Natural Language :: English",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.12",
+          "Topic :: System :: Monitoring",
+      ]
+dependencies = [
+  "python-dateutil>=2.6.1",
+  "requests>=2.18.1",
+]
+requires-python = ">=3.6"
+
+[project.optional-dependencies]
+test = [
+  "pytest>=3.2.3",
+  "pytest-responses>=0.4.0",
+  "versioneer",
+]
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "src/zenossapi/_version.py"
+versionfile_build = "zenossapi/_version.py"
+tag_prefix = "v"
+parentdir_prefix = "zenAPIClient"
+
+[tool.coverage.run]
+omit = [
+    "_version.py",
+    ]
+
+[project.urls]
+Homepage = "https://github.com/dan-smalley/zenAPIClient"
+Documentation = "https://zenapiclient.readthedocs.io"
+Repository = "https://github.com/dan-smalley/zenAPIClient.git"
