@@ -7,7 +7,9 @@
 ![GitHub Release](https://img.shields.io/github/v/release/dan-smalley/zenAPIClient?include_prereleases&logo=github&label=Release)
 ![TestPyPI - Version](https://img.shields.io/pypi/v/zenAPIClient?pypiBaseUrl=https%3A%2F%2Ftest.pypi.org&logo=pypi&label=TestPyPI) 
 
-
+> NOTE: This project is a fork of the excellent [ZenossAPIClient](https://github.com/Zuora-TechOps/ZenossAPIClient) by Zuora-TechOps and the [fork](https://github.com/boblickj/ZenossAPIClient) contributed by boblickj.
+> 
+>-dan-smalley
 
 Python module for interacting with the Zenoss API in an object-oriented way.
 Tested with Zenoss Cloud, no guarantees for earlier versions...
