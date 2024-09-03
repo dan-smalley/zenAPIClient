@@ -891,7 +891,7 @@ class DeviceRouter(ZenossRouter):
             )
         )
 
-        return response_data
+        return response_data['success']
 
 
 class ZenossDeviceClass(DeviceRouter):
