@@ -1979,6 +1979,7 @@ class ZenossDevice(DeviceRouter):
             self.comments = f'{self.comments}\n{comment}'
         else:
             self.comments = comment
+        return message
     
 
     def set_collector(self, collector):
