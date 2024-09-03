@@ -864,6 +864,35 @@ class DeviceRouter(ZenossRouter):
             dc_data['data']
         )
 
+    def add_comment_by_uid(self, device_uid, comment):
+        """
+        Append a new comment to a device 
+
+        Arguments:
+            device_uid (str): The uid of the device to comment on 
+            comment (str): Text of the desired comment
+
+        Returns:
+            str: Response message
+        """
+
+        # Get existing comments 
+        device = self.get_device_by_uid(device_uid)
+        if len(device.comments) > 0:
+            comment = f'{device.comments}\n{comment}'
+        
+        response_data = self._router_request(
+            self._make_request_data(
+                'setInfo',
+                dict(
+                    uid=device_uid,
+                    comments=comment,
+                )
+            )
+        )
+
+        return response_data['msg']
+
 
 class ZenossDeviceClass(DeviceRouter):
     """
@@ -1933,6 +1962,24 @@ class ZenossDevice(DeviceRouter):
         message = self.set_priority_by_uids([self.uid], priority)
         self.priority = priority
         return message
+
+    def add_comment(self, comment):
+        """
+        Append a comment to a device.
+
+        Arguments:
+            comment (str): Desired comment text
+
+        Returns:
+            str: Reponse message
+        """
+        
+        message = self.add_comment_by_uid(self.uid, comment)
+        if len(self.comments) > 0:
+            self.comments = f'{self.comments}\n{comment}'
+        else:
+            self.comments = comment
+    
 
     def set_collector(self, collector):
         """
