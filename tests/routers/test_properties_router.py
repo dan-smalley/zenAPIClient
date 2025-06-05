@@ -49,6 +49,18 @@ def request_callback(request):
     def deleteZenProperty(rdata):
         return properties_resp.delete_prop
 
+    def update(rdata):
+        return {
+            "uuid": "ba2f41f8-3c48-40a6-ab45-3c5e84252c3c",
+            "action": "PropertiesRouter",
+            "result": {
+                "success": True
+            },
+            "tid": 1,
+            "type": "rpc",
+            "method": "update"
+        }
+
     method = locals()[rdata['method']]
     resp_body = method(rdata['data'][0])
 
@@ -150,7 +162,7 @@ class TestPropertiesRouter(object):
 
         pr = PropertiesRouter(url, headers, True)
         prop = pr.set_property_value('test.example.com', 'zWinTrustedRealm', value='Westeros')
-        assert prop['value'] == "Westeros"
+        assert prop is True
 
     def test_properties_router_zenossproperty_set_value(self, responses):
         responses_callback(responses)

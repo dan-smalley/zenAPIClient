@@ -893,6 +893,28 @@ class DeviceRouter(ZenossRouter):
 
         return response_data['success']
 
+    def set_info_by_uid(self, device_uid, property, value):
+        """
+        Set Attributes on a device or device organizer
+
+        Arguments:
+            device_uid (str): The uid of the device to comment on
+            property (str): Name of the attribute to set
+            value (str): Value of the attribute to set
+
+        Returns:
+            str: Response message
+        """
+
+        response_data = self._router_request(
+            self._make_request_data(
+                'setInfo',
+                {'uid': device_uid, property: value}
+            )
+        )
+
+        return response_data['success']
+
 
 class ZenossDeviceClass(DeviceRouter):
     """
@@ -1280,7 +1302,7 @@ class ZenossDeviceClass(DeviceRouter):
             bool:
         """
         pr = PropertiesRouter(self.api_url, self.api_headers, self.ssl_verify)
-        return pr.set_property_value(self.uid, zproperty, value=value)
+        return pr.set_property_value(self.uid, id=zproperty, value=value)
 
     def delete_property(self, zproperty):
         """
@@ -1653,7 +1675,7 @@ class ZenossDevice(DeviceRouter):
             list(ZenossTemplate):
         """
         ut_list = self.list_unbound_templates()
-        find_path = re.compile('\((\/.*)\)')
+        find_path = re.compile('[(]([/].*)[)]')
         templates = []
         tr = TemplateRouter(self.api_url, self.api_headers, self.ssl_verify)
         for t in ut_list:
@@ -1708,7 +1730,7 @@ class ZenossDevice(DeviceRouter):
             list(ZenosTemplate):
         """
         bt_list = self.list_bound_templates()
-        find_path = re.compile('\((\/.*)\)')
+        find_path = re.compile('[(]([/].*)[)]')
         templates = []
         tr = TemplateRouter(self.api_url, self.api_headers, self.ssl_verify)
         for t in bt_list:
@@ -1979,6 +2001,21 @@ class ZenossDevice(DeviceRouter):
             self.comments = f'{self.comments}\n{comment}'
         else:
             self.comments = comment
+        return message
+
+    def set_info(self, property, value):
+        """
+        Set attribute of a device. DOES NOT update zProps or cProps
+
+        Arguments:
+            property (str): Name of property to set
+            value (str): Value to set property to
+
+        Returns:
+            str: Reponse message
+        """
+
+        message = self.set_info_by_uid(self.uid, property, value)
         return message
     
 

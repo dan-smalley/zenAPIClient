@@ -91,7 +91,7 @@ def request_callback(request):
 
     def getUnboundTemplates(rdata):
         return resp_json.ub_templates
-    
+
     def getBoundTemplates(rdata):
         return resp_json.bound_templates
 
@@ -155,6 +155,18 @@ def request_callback(request):
 
     def deleteZenProperty(rdata):
         return properties_resp.delete_prop
+
+    def update(rdata):
+        return {
+            "uuid": "ba2f41f8-3c48-40a6-ab45-3c5e84252c3c",
+            "action": "PropertiesRouter",
+            "result": {
+                "success": True
+            },
+            "tid": 1,
+            "type": "rpc",
+            "method": "update"
+        }
 
     if rdata['method'] in ['setBoundTemplates', 'bindOrUnbindTemplate',
                            'resetBoundTemplates', 'renameDevice',
@@ -451,7 +463,7 @@ class TestDeviceRouter(object):
         dr = DeviceRouter(url, headers, True)
         dc = dr.get_device_class('Server/TEST')
         prop = dc.set_property('zWinTrustedRealm', value='Westeros')
-        assert prop['value'] == "Westeros"
+        assert prop is True
 
     def test_device_router_zenossdeviceclass_delete_property(self, responses):
         responses.add_callback(
@@ -622,7 +634,7 @@ class TestDeviceRouter(object):
         d = dc.get_device('test.example.com')
         resp = d.list_bound_templates()
         assert resp[0]['name'] == "Device"
-        
+
     def test_device_router_zenossdevice_get_bound_templates(self, responses):
         responses.assert_all_requests_are_fired = False
         responses.add_callback(
@@ -969,7 +981,7 @@ class TestDeviceRouter(object):
         dc = dr.get_device_class('Server/TEST')
         d = dc.get_device('test.example.com')
         prop = d.set_property('zWinTrustedRealm', value='Westeros')
-        assert prop['value'] == "Westeros"
+        assert prop is True
 
     def test_device_router_zenossdevice_delete_property(self, responses):
         responses.add_callback(

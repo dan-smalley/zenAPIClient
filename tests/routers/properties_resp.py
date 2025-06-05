@@ -245,3 +245,15 @@ set_custom_prop = {
     "type": "rpc",
     "method": "setZenProperty"
 }
+
+update = {
+    "uuid": "62bc1c3b-f7f3-41b1-89af-5b0720d089cc",
+    "action": "PropertiesRouter",
+    "result": {
+        "msg": "Property updated.",
+        "success": True
+    },
+    "tid": 1,
+    "type": "rpc",
+    "method": "update"
+}

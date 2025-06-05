@@ -297,7 +297,7 @@ class PropertiesRouter(ZenossRouter):
             prop_data['data'][0]
         )
 
-    def set_property_value(self, uid, zproperty, value=None):
+    def set_property_value(self, uid, id, value=None):
         """
         Sets (or updates) the local value of a property
 
@@ -309,16 +309,16 @@ class PropertiesRouter(ZenossRouter):
         """
         property_data = self._router_request(
             self._make_request_data(
-                'setZenProperty',
+                'update',
                 dict(
                     uid=uid,
-                    zProperty=zproperty,
+                    id=id,
                     value=value,
                 )
             )
         )
 
-        return property_data['data']
+        return True
 
     def delete_property(self, uid, zproperty):
         """
@@ -357,8 +357,14 @@ class ZenossProperty(PropertiesRouter):
         self.description = property_data['description']
         self.islocal = property_data['islocal']
         self.label = property_data['label']
-        self.value = property_data['value']
-        self.valueAsString = property_data['valueAsString']
+        if 'value' not in property_data:
+            self.value = 'REDACTED'
+        else:
+            self.value = property_data['value']
+        if 'valueAsString' not in property_data:
+            self.valueAsString = 'REDACTED'
+        else:
+            self.valueAsString = property_data['valueAsString']
         self.path = 'Devices{0}'.format(property_data['path'])
         self.type = property_data['type']
         self.options = []
@@ -379,8 +385,8 @@ class ZenossProperty(PropertiesRouter):
 
         property_data = self.set_property_value(self.path, self.id, value=value)
 
-        self.value = property_data['value']
-        self.valueAsString = property_data['valueAsString']
+        self.value = value
+        self.valueAsString = str(value)
         self.islocal = '1'
 
         return True
@@ -412,8 +418,14 @@ class ZenossCustomProperty(PropertiesRouter):
         self.id = property_data['id']
         self.islocal = property_data['islocal']
         self.label = property_data['label']
-        self.value = property_data['value']
-        self.valueAsString = property_data['valueAsString']
+        if 'value' not in property_data:
+            self.value = 'REDACTED'
+        else:
+            self.value = property_data['value']
+        if 'valueAsString' not in property_data:
+            self.valueAsString = 'REDACTED'
+        else:
+            self.valueAsString = property_data['valueAsString']
         self.path = 'Devices{0}'.format(property_data['path'])
         self.type = property_data['type']
         self.options = property_data['options']
@@ -434,8 +446,8 @@ class ZenossCustomProperty(PropertiesRouter):
 
         property_data = self.set_property_value(self.path, self.id, value=value)
 
-        self.value = property_data['value']
-        self.valueAsString = property_data['valueAsString']
+        self.value = value
+        self.valueAsString = str(value)
         self.islocal = '1'
 
         return True
