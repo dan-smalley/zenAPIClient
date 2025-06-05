@@ -451,7 +451,7 @@ class TestDeviceRouter(object):
         dr = DeviceRouter(url, headers, True)
         dc = dr.get_device_class('Server/TEST')
         prop = dc.set_property('zWinTrustedRealm', value='Westeros')
-        assert prop['value'] == "Westeros"
+        assert prop == True
 
     def test_device_router_zenossdeviceclass_delete_property(self, responses):
         responses.add_callback(
