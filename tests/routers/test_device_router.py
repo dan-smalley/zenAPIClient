@@ -152,8 +152,6 @@ def request_callback(request):
             return properties_resp.set_prop
         elif rdata['zProperty'] == "cDateTest":
             return properties_resp.set_custom_prop
-        else:
-            return True
 
     def deleteZenProperty(rdata):
         return properties_resp.delete_prop
@@ -393,70 +391,67 @@ class TestDeviceRouter(object):
         assert isinstance(prop, ZenossProperty)
         assert prop.id == 'zWinTrustedRealm'
 
-    # TODO: Update to accept the fact that we no longer return the property value on success
-    # def test_device_router_zenossdeviceclass_get_custom_properties(self, responses):
-    #     responses.add_callback(
-    #         responses.POST,
-    #         '{0}/properties_router'.format(url),
-    #         callback=request_callback,
-    #         content_type='application/json',
-    #     )
-    #     responses.add_callback(
-    #         responses.POST,
-    #         '{0}/device_router'.format(url),
-    #         callback=request_callback,
-    #         content_type='application/json',
-    #     )
-    #
-    #     dr = DeviceRouter(url, headers, True)
-    #     dc = dr.get_device_class('Server/TEST')
-    #     props = dc.get_custom_properties()
-    #     assert props['total'] == 1
-    #     assert len(props['properties']) == 1
-    #     assert isinstance(props['properties'][0], ZenossCustomProperty)
-    #     assert props['properties'][0].id == "cDateTest"
-    #
-    #
-    # def test_device_router_zenossdeviceclass_get_custom_property(self, responses):
-    #     responses.add_callback(
-    #         responses.POST,
-    #         '{0}/properties_router'.format(url),
-    #         callback=request_callback,
-    #         content_type='application/json',
-    #     )
-    #     responses.add_callback(
-    #         responses.POST,
-    #         '{0}/device_router'.format(url),
-    #         callback=request_callback,
-    #         content_type='application/json',
-    #     )
-    #
-    #     dr = DeviceRouter(url, headers, True)
-    #     dc = dr.get_device_class('Server/TEST')
-    #     prop = dc.get_custom_property('zWinTrustedRealm')
-    #     assert isinstance(prop, ZenossCustomProperty)
-    #     assert prop.id == "cDateTest"
-    #     assert prop.path == "Devices/"
-    #
-    #
-    # def test_device_router_zenossdeviceclass_set_property(self, responses):
-    #     responses.add_callback(
-    #         responses.POST,
-    #         '{0}/properties_router'.format(url),
-    #         callback=request_callback,
-    #         content_type='application/json',
-    #     )
-    #     responses.add_callback(
-    #         responses.POST,
-    #         '{0}/device_router'.format(url),
-    #         callback=request_callback,
-    #         content_type='application/json',
-    #     )
+    def test_device_router_zenossdeviceclass_get_custom_properties(self, responses):
+        responses.add_callback(
+            responses.POST,
+            '{0}/properties_router'.format(url),
+            callback=request_callback,
+            content_type='application/json',
+        )
+        responses.add_callback(
+            responses.POST,
+            '{0}/device_router'.format(url),
+            callback=request_callback,
+            content_type='application/json',
+        )
+
+        dr = DeviceRouter(url, headers, True)
+        dc = dr.get_device_class('Server/TEST')
+        props = dc.get_custom_properties()
+        assert props['total'] == 1
+        assert len(props['properties']) == 1
+        assert isinstance(props['properties'][0], ZenossCustomProperty)
+        assert props['properties'][0].id == "cDateTest"
+
+    def test_device_router_zenossdeviceclass_get_custom_property(self, responses):
+        responses.add_callback(
+            responses.POST,
+            '{0}/properties_router'.format(url),
+            callback=request_callback,
+            content_type='application/json',
+        )
+        responses.add_callback(
+            responses.POST,
+            '{0}/device_router'.format(url),
+            callback=request_callback,
+            content_type='application/json',
+        )
+
+        dr = DeviceRouter(url, headers, True)
+        dc = dr.get_device_class('Server/TEST')
+        prop = dc.get_custom_property('zWinTrustedRealm')
+        assert isinstance(prop, ZenossCustomProperty)
+        assert prop.id == "cDateTest"
+        assert prop.path == "Devices/"
+
+    def test_device_router_zenossdeviceclass_set_property(self, responses):
+        responses.add_callback(
+            responses.POST,
+            '{0}/properties_router'.format(url),
+            callback=request_callback,
+            content_type='application/json',
+        )
+        responses.add_callback(
+            responses.POST,
+            '{0}/device_router'.format(url),
+            callback=request_callback,
+            content_type='application/json',
+        )
 
         dr = DeviceRouter(url, headers, True)
         dc = dr.get_device_class('Server/TEST')
         prop = dc.set_property('zWinTrustedRealm', value='Westeros')
-        assert prop == True
+        assert prop['value'] == "Westeros"
 
     def test_device_router_zenossdeviceclass_delete_property(self, responses):
         responses.add_callback(
@@ -956,26 +951,25 @@ class TestDeviceRouter(object):
         assert prop.id == "cDateTest"
         assert prop.path == "Devices/"
 
-    # TODO: Update to accept the fact that we no longer return the property value on success
-    # def test_device_router_zenossdevice_set_property(self, responses):
-    #     responses.add_callback(
-    #         responses.POST,
-    #         '{0}/properties_router'.format(url),
-    #         callback=request_callback,
-    #         content_type='application/json',
-    #     )
-    #     responses.add_callback(
-    #         responses.POST,
-    #         '{0}/device_router'.format(url),
-    #         callback=request_callback,
-    #         content_type='application/json',
-    #     )
-    #
-    #     dr = DeviceRouter(url, headers, True)
-    #     dc = dr.get_device_class('Server/TEST')
-    #     d = dc.get_device('test.example.com')
-    #     prop = d.set_property('zWinTrustedRealm', value='Westeros')
-    #     assert prop['value'] == "Westeros"
+    def test_device_router_zenossdevice_set_property(self, responses):
+        responses.add_callback(
+            responses.POST,
+            '{0}/properties_router'.format(url),
+            callback=request_callback,
+            content_type='application/json',
+        )
+        responses.add_callback(
+            responses.POST,
+            '{0}/device_router'.format(url),
+            callback=request_callback,
+            content_type='application/json',
+        )
+
+        dr = DeviceRouter(url, headers, True)
+        dc = dr.get_device_class('Server/TEST')
+        d = dc.get_device('test.example.com')
+        prop = d.set_property('zWinTrustedRealm', value='Westeros')
+        assert prop['value'] == "Westeros"
 
     def test_device_router_zenossdevice_delete_property(self, responses):
         responses.add_callback(
