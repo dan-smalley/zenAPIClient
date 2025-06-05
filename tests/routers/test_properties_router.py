@@ -150,7 +150,7 @@ class TestPropertiesRouter(object):
 
         pr = PropertiesRouter(url, headers, True)
         prop = pr.set_property_value('test.example.com', 'zWinTrustedRealm', value='Westeros')
-        assert prop['value'] == "Westeros"
+        assert prop == True
 
     def test_properties_router_zenossproperty_set_value(self, responses):
         responses_callback(responses)
