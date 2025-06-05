@@ -1302,7 +1302,7 @@ class ZenossDeviceClass(DeviceRouter):
             bool:
         """
         pr = PropertiesRouter(self.api_url, self.api_headers, self.ssl_verify)
-        return pr.set_property_value(self.uid, zproperty, value=value)
+        return pr.set_property_value(self.uid, id=zproperty, value=value)
 
     def delete_property(self, zproperty):
         """
