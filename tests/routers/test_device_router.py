@@ -152,6 +152,8 @@ def request_callback(request):
             return properties_resp.set_prop
         elif rdata['zProperty'] == "cDateTest":
             return properties_resp.set_custom_prop
+        else:
+            return True
 
     def deleteZenProperty(rdata):
         return properties_resp.delete_prop
