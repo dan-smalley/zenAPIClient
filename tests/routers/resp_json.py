@@ -1380,11 +1380,11 @@ delete_c = {
     "method": "deleteComponents"
 }
 
-set_property_value = {
-    "uuid": "be1c91bb-055e-47a2-bff4-08ca3a049a0a",
+update = {
+    "uuid": "62bc1c3b-f7f3-41b1-89af-5b0720d089cc",
     "action": "PropertiesRouter",
     "result": {
-        "msg": "Property successfully updated",
+        "msg": "Property updated.",
         "success": True
     },
     "tid": 1,
