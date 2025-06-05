@@ -46,13 +46,13 @@ def request_callback(request):
         elif rdata['zProperty'] == "cDateTest":
             return properties_resp.set_custom_prop
 
-    def deleteZenProperty(rdata):
-        return properties_resp.delete_prop
-
-    method = locals()[rdata['method']]
-    resp_body = method(rdata['data'][0])
-
-    return (200, resp_headers, json.dumps(resp_body))
+    # def deleteZenProperty(rdata):
+    #     return properties_resp.delete_prop
+    #
+    # method = locals()[rdata['method']]
+    # resp_body = method(rdata['data'][0])
+    #
+    # return (200, resp_headers, json.dumps(resp_body))
 
 
 def responses_callback(responses):
