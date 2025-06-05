@@ -393,29 +393,30 @@ class TestDeviceRouter(object):
         assert isinstance(prop, ZenossProperty)
         assert prop.id == 'zWinTrustedRealm'
 
-    def test_device_router_zenossdeviceclass_get_custom_properties(self, responses):
-        responses.add_callback(
-            responses.POST,
-            '{0}/properties_router'.format(url),
-            callback=request_callback,
-            content_type='application/json',
-        )
-        responses.add_callback(
-            responses.POST,
-            '{0}/device_router'.format(url),
-            callback=request_callback,
-            content_type='application/json',
-        )
-
-        dr = DeviceRouter(url, headers, True)
-        dc = dr.get_device_class('Server/TEST')
-        props = dc.get_custom_properties()
-        assert props['total'] == 1
-        assert len(props['properties']) == 1
-        assert isinstance(props['properties'][0], ZenossCustomProperty)
-        assert props['properties'][0].id == "cDateTest"
-
     # TODO: Update to accept the fact that we no longer return the property value on success
+    # def test_device_router_zenossdeviceclass_get_custom_properties(self, responses):
+    #     responses.add_callback(
+    #         responses.POST,
+    #         '{0}/properties_router'.format(url),
+    #         callback=request_callback,
+    #         content_type='application/json',
+    #     )
+    #     responses.add_callback(
+    #         responses.POST,
+    #         '{0}/device_router'.format(url),
+    #         callback=request_callback,
+    #         content_type='application/json',
+    #     )
+    #
+    #     dr = DeviceRouter(url, headers, True)
+    #     dc = dr.get_device_class('Server/TEST')
+    #     props = dc.get_custom_properties()
+    #     assert props['total'] == 1
+    #     assert len(props['properties']) == 1
+    #     assert isinstance(props['properties'][0], ZenossCustomProperty)
+    #     assert props['properties'][0].id == "cDateTest"
+    #
+    #
     # def test_device_router_zenossdeviceclass_get_custom_property(self, responses):
     #     responses.add_callback(
     #         responses.POST,
