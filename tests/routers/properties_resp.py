@@ -245,3 +245,5 @@ set_custom_prop = {
     "type": "rpc",
     "method": "setZenProperty"
 }
+
+update = True
