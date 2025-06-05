@@ -246,4 +246,14 @@ set_custom_prop = {
     "method": "setZenProperty"
 }
 
-update = True
+set_property_value = {
+    "uuid": "be1c91bb-055e-47a2-bff4-08ca3a049a0a",
+    "action": "PropertiesRouter",
+    "result": {
+        "msg": "Property successfully updated",
+        "success": True
+    },
+    "tid": 1,
+    "type": "rpc",
+    "method": "update"
+}
