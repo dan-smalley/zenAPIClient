@@ -43,3 +43,4 @@ jobs:
         with:
           repository-url: ${{ inputs.pypi-url }}
           verbose: true
+          attestations: false
