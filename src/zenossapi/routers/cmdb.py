@@ -81,7 +81,7 @@ class CmdbRouter(ZenossRouter):
             'next_full_run': active_config['nextFullRun'],
             'last_run_started': active_config['lastRunStarted'],
             'last_run_finished': active_config['lastRunFinished'],
-            'last_successful_run_finished': ['lastRunSuccessFinished']
+            'last_successful_run_finished': active_config['lastRunSuccessFinished']
         }
 
         return stats
