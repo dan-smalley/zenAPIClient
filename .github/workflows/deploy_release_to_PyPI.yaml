@@ -19,7 +19,6 @@ jobs:
     with:
       workflow-environment: Dev
       pypi-url: https://test.pypi.org/legacy/
-      verbose: true
     permissions:
       id-token: write
 
