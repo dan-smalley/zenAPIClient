@@ -107,7 +107,7 @@ class DeviceRouter(ZenossRouter):
         group_data = self._router_request(
             self._make_request_data(
                 'addLocationNode',
-                dict(type=Location,
+                dict(type='Location',
                      contextUid=contextUid,
                      id=id,
                      address=address,
