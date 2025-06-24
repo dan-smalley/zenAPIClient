@@ -92,6 +92,31 @@ class DeviceRouter(ZenossRouter):
 
         return group_data['success']
 
+    def add_location(self, id, contextUid='zport/dmd/Locations', address="", description=""):
+        """
+        Adds a node to the location tree
+        Args:
+            contextUid: The existing node to add the new node to, defaults to root 
+            id: name of the node
+            address: optional physical address
+            description: optional description
+
+        Returns: (bool) success
+
+        """
+        group_data = self._router_request(
+            self._make_request_data(
+                'addLocationNode',
+                dict(type=Location,
+                     contextUid=contextUid,
+                     id=id,
+                     address=address,
+                     description=description)
+            )
+        )
+
+        return group_data['success']
+
     def delete_node(self, uid):
         """
         Removes a node from the node tree
