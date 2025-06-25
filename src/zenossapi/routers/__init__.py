@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
-from time import sleep
 import requests
 import json
+from requests import ReadTimeout
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from requests.exceptions import ConnectionError
 from zenossapi.apiclient import ZenossAPIClientError, ZenossAPIClientAuthenticationError
 
@@ -43,7 +44,7 @@ class ZenossRouter(object):
                 data=[data],
                 tid=1,
             )
-
+    @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=2, min=2, max=20), retry=retry_if_exception_type(ReadTimeout))
     def _router_request(self, data, response_timeout=None):
         # Disable warnings from urllib3 if ssl_verify is False, otherwise
         # every request will print an InsecureRequestWarning
@@ -53,27 +54,21 @@ class ZenossRouter(object):
         if response_timeout is None:
             response_timeout = self.api_timeout
 
-        tries = 0
-        while tries < self.api_maxattempts:
+        try:
+            response = requests.request("POST",
+                '{0}/{1}'.format(self.api_url, self.api_endpoint),
+                headers=self.api_headers,
+                data=json.dumps(data).encode('utf-8'),
+                verify=self.ssl_verify,
+                timeout=response_timeout
+            )
+        except ConnectionError as e:
+            logging.warning('Error calling Zenoss API: %s\n    Request data: %s' % (e, data))
+            # Atempt to display the failure reason from Zenoss
             try:
-                response = requests.request("POST",
-                    '{0}/{1}'.format(self.api_url, self.api_endpoint),
-                    headers=self.api_headers,
-                    data=json.dumps(data).encode('utf-8'),
-                    verify=self.ssl_verify,
-                    timeout=response_timeout
-                )
-                break
-            except ConnectionError as e:
-                logging.warning('Error calling Zenoss API attempt %i/%i\n    Error: %s\n    Request data: %s' % (tries, self.api_maxattempts, e, data))
-                # Atempt to display the failure reason from Zenoss
-                try:
-                    logging.warning("Query failure reason from Zensos: %s" % response['result']['msg'])
-                except:
-                    pass
-                if tries == self.api_maxattempts:
-                    raise ZenossAPIClientError('Unable to connect to Zenoss server {0}: {1}'.format(self.api_url, e))
-                tries += 1
+                logging.warning("Query failure reason from Zensos: %s" % response['result']['msg'])
+            except:
+                pass
 
         if response.ok:
             if response.url.find('login_form') > -1:
