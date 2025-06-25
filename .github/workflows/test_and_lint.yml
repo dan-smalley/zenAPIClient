@@ -32,7 +32,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        python -m pip install flake8 pytest pytest-responses coverage genbadge defusedxml
+        python -m pip install flake8 pytest pytest-responses coverage genbadge defusedxml tenacity
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install .
     - name: Lint with flake8
